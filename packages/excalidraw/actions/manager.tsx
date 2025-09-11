@@ -6,6 +6,7 @@ import type {
   ExcalidrawElement,
   OrderedExcalidrawElement,
 } from "@excalidraw/element/types";
+import { CaptureUpdateAction } from "@excalidraw/element";
 
 import { trackEvent } from "../analytics";
 
@@ -18,6 +19,9 @@ import type {
   PanelComponentProps,
   ActionSource,
 } from "./types";
+
+import { restore } from "../data/restore";
+import { isValidExcalidrawData } from "../data/json";
 
 const trackAction = (
   action: Action,
@@ -140,7 +144,39 @@ export class ActionManager {
     this.updater(action.perform(elements, appState, value, this.app));
   }
 
+  //导入json
+  importJSON(data: ExcalidrawElement[]){
+    if(!data.length) return;
 
+    try {
+      const appState = this.getAppState();
+      const elements = data;
+
+      let payload: { elements?: any; appState?: any; files?: any } = {};
+      
+      payload = { elements };
+
+      const { elements: restoredElements, appState: restoredAppState, files } = restore(
+        payload,
+        appState,
+        elements,
+        { repairBindings: true, refreshDimensions: true },
+      );
+
+      this.updater({
+        elements: restoredElements,
+        appState: restoredAppState,
+        files,
+        captureUpdate: CaptureUpdateAction.IMMEDIATELY,
+      });
+    } catch (error: any) {
+      const appState = this.getAppState();
+      this.updater({
+        appState: { ...appState, errorMessage: error?.message || String(error) },
+        captureUpdate: CaptureUpdateAction.EVENTUALLY,
+      });
+    }
+  }
 
   /**
    * @param data additional data sent to the PanelComponent
