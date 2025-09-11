@@ -439,16 +439,19 @@ export const DEFAULT_ELEMENT_PROPS: {
   strokeStyle: ExcalidrawElement["strokeStyle"];
   roughness: ExcalidrawElement["roughness"];
   opacity: ExcalidrawElement["opacity"];
+  roundness: ExcalidrawElement["roundness"];
   locked: ExcalidrawElement["locked"];
 } = {
   strokeColor: COLOR_PALETTE.black,
   backgroundColor: COLOR_PALETTE.transparent,
   fillStyle: "solid",
-  strokeWidth: 2,
+  strokeWidth: 1,
   strokeStyle: "solid",
-  roughness: ROUGHNESS.artist,
+  roughness: ROUGHNESS.architect,
   opacity: 100,
+  roundness: null,
   locked: false,
+
 };
 
 export const LIBRARY_SIDEBAR_TAB = "library";

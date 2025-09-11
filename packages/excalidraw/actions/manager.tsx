@@ -140,6 +140,8 @@ export class ActionManager {
     this.updater(action.perform(elements, appState, value, this.app));
   }
 
+
+
   /**
    * @param data additional data sent to the PanelComponent
    */

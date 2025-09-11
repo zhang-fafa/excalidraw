@@ -55,7 +55,6 @@ const StaticCanvas = (props: StaticCanvasProps) => {
       wrapper.replaceChildren(canvas);
       canvas.classList.add("excalidraw__canvas", "static");
     }
-
     renderStaticScene(
       {
         canvas,

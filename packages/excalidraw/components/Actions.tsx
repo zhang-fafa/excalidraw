@@ -182,7 +182,9 @@ export const SelectedShapeActions = ({
 
       {(canChangeRoundness(appState.activeTool.type) ||
         targetElements.some((element) => canChangeRoundness(element.type))) && (
-        <>{renderAction("changeRoundness")}</>
+        <>
+        {renderAction("changeRoundness")}
+        </>
       )}
 
       {(toolIsArrow(appState.activeTool.type) ||

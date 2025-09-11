@@ -72,6 +72,7 @@ export const LoadScene = () => {
         ),
       }))
     ) {
+      console.log('actionLoadScene',actionLoadScene)
       actionManager.executeAction(actionLoadScene);
     }
   };
