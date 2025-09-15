@@ -640,5 +640,12 @@
     },
     "itemNotAvailable": "Command is not available...",
     "shortcutHint": "For Command palette, use {{shortcut}}"
-  }
+  },
+  "importJSON": {
+    "title": "import JSON"
+  }, 
+  "exportJSON": { 
+    "title": "export JSON"
+  },
+  "preview" : "preview"
 }

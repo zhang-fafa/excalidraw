@@ -69,5 +69,5 @@ export default defineConfig({
         statements: 60,
       },
     },
-  },
+  }
 });

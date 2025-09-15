@@ -521,5 +521,13 @@
     "description": "目前仅支持<flowchartLink>流程图</flowchartLink>、<sequenceLink>序列图</sequenceLink>和<classLink>类图</classLink>。其他类型在 Excalidraw 中将以图像呈现。",
     "syntax": "Mermaid 语法",
     "preview": "预览"
-  }
+  },
+  "importJSON": {
+    "title": "导入 JSON",
+    "button": "导入"
+  }, 
+  "exportJSON": { 
+    "title": "导出 JSON"
+  },
+  "preview" : "预览"
 }

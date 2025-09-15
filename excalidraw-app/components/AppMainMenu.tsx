@@ -1,10 +1,13 @@
 import { eyeIcon } from "@excalidraw/excalidraw/components/icons";
 import { MainMenu } from "@excalidraw/excalidraw/index";
 import React from "react";
+import { useI18n } from "@excalidraw/excalidraw";
 
 import { isDevEnv } from "@excalidraw/common";
 
 import type { Theme } from "@excalidraw/element/types";
+
+import { ImportJSONIcon, ExportJSONIcon } from "../components/icons";
 
 import { LanguageList } from "../app-language/LanguageList";
 // import { isExcalidrawPlusSignedUser } from "../app_constants";
@@ -19,6 +22,7 @@ export const AppMainMenu: React.FC<{
   setTheme: (theme: Theme | "system") => void;
   refresh: () => void;
 }> = React.memo((props) => {
+  const { t } = useI18n();
   const ExportJSON = () => {};
   const ImportJSON = () => {};
 
@@ -26,12 +30,12 @@ export const AppMainMenu: React.FC<{
     <MainMenu>
       <MainMenu.DefaultItems.LoadScene />
       {/* 导入json */}
-      <MainMenu.Item icon={eyeIcon} onClick={ImportJSON}>
-        ImportJSON
+      <MainMenu.Item icon={<ImportJSONIcon />} onClick={ImportJSON}>
+        {t("importJSON.title")}
       </MainMenu.Item>
       {/* 导出为json */}
-      <MainMenu.Item icon={eyeIcon} onClick={ExportJSON}>
-        ExportJSON
+      <MainMenu.Item icon={<ExportJSONIcon />} onClick={ExportJSON}>
+        {t("exportJSON.title")}
       </MainMenu.Item>
       <MainMenu.DefaultItems.SaveToActiveFile />
       <MainMenu.DefaultItems.Export />
