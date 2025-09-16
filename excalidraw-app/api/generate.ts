@@ -6,5 +6,5 @@ import request from "../utils/request";
 export const preview = (
   param: readonly Ordered<NonDeletedExcalidrawElement>[] | undefined,
 ) => {
-  return request.post("/api/preview", param);
+  return request.post("/api/image/preview", { elements: param });
 };

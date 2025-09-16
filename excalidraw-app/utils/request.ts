@@ -22,11 +22,11 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
   (response) => {
-    const { code, data, message } = response.data;
+    const { code, message } = response.data;
     let msg = "";
     // 根据业务状态码处理响应
     if (code === 200) {
-      return data;
+      return response.data;
     }
     if (code === 401) {
       msg = "token过期";

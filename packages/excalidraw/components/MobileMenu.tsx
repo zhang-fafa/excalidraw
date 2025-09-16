@@ -16,6 +16,7 @@ import { HandButton } from "./HandButton";
 import { HintViewer } from "./HintViewer";
 import { Island } from "./Island";
 import { LockButton } from "./LockButton";
+import { Preview } from "./Preview"
 import { PenModeButton } from "./PenModeButton";
 import { Section } from "./Section";
 import Stack from "./Stack";
@@ -101,6 +102,7 @@ export const MobileMenu = ({
                     appState.openDialog?.name !== "elementLinkSelector" && (
                       <DefaultSidebarTriggerTunnel.Out />
                     )}
+                  <Preview elements={elements} isMobile={true}/>
                   <PenModeButton
                     checked={appState.penMode}
                     onChange={() => onPenModeToggle(null)}
