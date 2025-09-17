@@ -1,4 +1,5 @@
 import axios from "axios";
+import { message as AMessage } from "antd";
 
 // 创建axios实例
 const service = axios.create({
@@ -8,6 +9,11 @@ const service = axios.create({
     "Content-Type": "application/json;charset=utf-8",
   },
 });
+
+const showSimpleError = (msg: string) => {
+  console.error('error',msg);
+  AMessage.error(msg);
+};
 
 // 请求拦截器
 service.interceptors.request.use(
@@ -33,6 +39,7 @@ service.interceptors.response.use(
     } else {
       msg = "请求失败";
     }
+    showSimpleError(msg);
     return Promise.reject(new Error(message || msg));
   },
   (error) => {
@@ -76,6 +83,7 @@ service.interceptors.response.use(
       default:
         message = `连接出错(${status})!`;
     }
+    showSimpleError(message);
     return Promise.reject({ error, message });
   },
 );

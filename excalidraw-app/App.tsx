@@ -76,6 +76,7 @@ import type { ResolutionType } from "@excalidraw/common/utility-types";
 import type { ResolvablePromise } from "@excalidraw/common/utils";
 
 import { MyDialog } from "./components/common/Dialog";
+import { Save } from "./components/common/Save";
 
 import CustomStats from "./CustomStats";
 import {
@@ -855,10 +856,17 @@ const ExcalidrawWrapper = () => {
             <div className="top-right-ui">
               {collabError.message && <CollabError collabError={collabError} />}
               {excalidrawAPI ? (
-                <Preview
-                  elements={excalidrawAPI.getSceneElements()}
-                  isMobile={false}
-                />
+                <>
+                  <Save
+                    elements={excalidrawAPI.getSceneElements()}
+                    isMobile={false}
+                    style={{ marginRight: 10 }}
+                  />
+                  <Preview
+                    elements={excalidrawAPI.getSceneElements()}
+                    isMobile={false}
+                  />
+                </>
               ) : null}
             </div>
           );
@@ -975,6 +983,12 @@ const ExcalidrawWrapper = () => {
                         !jsonTextareaRef.current ||
                         !excalidrawAPI
                       ) {
+                        return;
+                      }
+                      if (!jsonTextareaRef.current.value) {
+                        excalidrawAPI!.setToast({
+                          message: "导入内容不能为空！",
+                        });
                         return;
                       }
                       try {
