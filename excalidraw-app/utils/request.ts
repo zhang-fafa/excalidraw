@@ -58,7 +58,7 @@ service.interceptors.response.use(
         message = "拒绝访问";
         break;
       case 404:
-        message = "请求地址出错";
+        message = "请求地址不存在";
         break;
       case 408:
         message = "请求超时";
