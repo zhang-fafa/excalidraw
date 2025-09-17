@@ -16,14 +16,12 @@ import { devLog } from "../../../excalidraw-app/utils/devlog";
 
 import { useExcalidrawAppState } from "./App";
 
-const PreviewButton = ({ onPreview, isMobile }: { isMobile: boolean; onPreview: () => void }) => {
-  const appState = useExcalidrawAppState();
+const PreviewButton = ({ isMobile, onPreview }: { isMobile: boolean; onPreview: () => void }) => {
+  
+
   const resizedEyeIcon = React.cloneElement(eyeIcon, {
     style: { width: "16px", height: "16px", marginRight: "4px" },
   });
-  useEffect(() => {
-    devLog('isMobile',isMobile)
-  }, [isMobile]);
   return (
     <Button
       className={!isMobile ? clsx("collab-button") : ""}
@@ -33,7 +31,7 @@ const PreviewButton = ({ onPreview, isMobile }: { isMobile: boolean; onPreview: 
       title={t("preview")}
     >
       {resizedEyeIcon}
-      {isMobile ?? t("preview")}
+      {isMobile ? "" : t("preview")}
     </Button>
   );
 };
@@ -122,7 +120,7 @@ export const Preview = ({
   }, [openDialog]);
   return (
     <>
-      <PreviewButton onPreview={() => setIsOpen(true)} isMobile />
+      <PreviewButton onPreview={() => setIsOpen(true)} isMobile={isMobile} />
       <PreviewDialog
         excalidrawAPI={excalidrawAPI}
         isOpen={isOpen}
