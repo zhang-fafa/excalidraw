@@ -74,6 +74,8 @@ import type {
 import type { ResolutionType } from "@excalidraw/common/utility-types";
 import type { ResolvablePromise } from "@excalidraw/common/utils";
 
+import { MyDialog } from "./components/common/Dialog";
+
 import CustomStats from "./CustomStats";
 import {
   Provider,
@@ -333,7 +335,6 @@ const initializeScene = async (opts: {
   }
   return { scene: null, isExternalScene: false };
 };
-
 const ExcalidrawWrapper = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const isCollabDisabled = isRunningInIframe();
@@ -342,6 +343,8 @@ const ExcalidrawWrapper = () => {
 
   const [langCode, setLangCode] = useAppLangCode();
 
+  const [isImportJSONDialogOpen, setIsImportJSONDialogOpen] = useState(false);
+  const [isExportJSONDialogOpen, setIsExportJSONDialogOpen] = useState(false);
   // initial state
   // ---------------------------------------------------------------------------
 
@@ -872,6 +875,8 @@ const ExcalidrawWrapper = () => {
           theme={appTheme}
           setTheme={(theme) => setAppTheme(theme)}
           refresh={() => forceRefresh((prev) => !prev)}
+          onChangeImportJSON={setIsImportJSONDialogOpen}
+          onChangeExportJSON={setIsExportJSONDialogOpen}
         />
         <AppWelcomeScreen
           onCollabDialogOpen={onCollabDialogOpen}
@@ -933,6 +938,56 @@ const ExcalidrawWrapper = () => {
             }
           }}
         />
+
+        {excalidrawAPI && (
+          <>
+            {/* importJSON 弹窗*/}
+            <MyDialog
+              title={t("importJSON.title")}
+              isOpen={isImportJSONDialogOpen}
+              onClose={() => setIsImportJSONDialogOpen(false)}
+            >
+              <div>
+                <textarea
+                  name="json"
+                  style={{
+                    width: "100%",
+                    height: "60vh",
+                    boxSizing: "border-box",
+                    whiteSpace: "pre-wrap",
+                  }}
+                ></textarea>
+                <div className="button-container">
+                  <button>导入</button>
+                </div>
+              </div>
+            </MyDialog>
+            {/* exportJSON 弹窗*/}
+            <MyDialog
+              title={t("exportJSON.title")}
+              isOpen={isExportJSONDialogOpen}
+              onClose={() => setIsExportJSONDialogOpen(false)}
+            >
+              <div>
+                <textarea
+                  name="json"
+                  style={{
+                    width: "100%",
+                    height: "60vh",
+                    boxSizing: "border-box",
+                    whiteSpace: "pre-wrap",
+                  }}
+                  readOnly
+                >
+                  {JSON.stringify(excalidrawAPI.getSceneElements())}
+                </textarea>
+                <div className="button-container">
+                  <button>复制</button>
+                </div>
+              </div>
+            </MyDialog>
+          </>
+        )}
 
         {errorMessage && (
           <ErrorDialog onClose={() => setErrorMessage("")}>

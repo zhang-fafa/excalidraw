@@ -8,7 +8,7 @@ import { useUIAppState } from "@excalidraw/excalidraw/context/ui-appState";
 
 import React, { useState, useEffect } from "react";
 
-import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
+import { useExcalidrawSetAppState } from "./App";
 import type { NonDeletedExcalidrawElement } from "@excalidraw/element/types";
 
 import { preview } from "../../../excalidraw-app/api/generate";
@@ -86,7 +86,9 @@ const PreviewDialog = ({
       return <div>您的画布为空！</div>;
     }
     return previewData ? (
-      <img src={previewData} alt="preview" style={{ maxWidth: "100%" }} />
+      <div style={{ display: "flex" }}>
+        <img src={previewData} alt="preview" style={{ maxHeight: "100%", maxWidth: "100%", margin: "auto" }} />
+      </div>
     ) : (
       <div>暂无预览</div>
     );
@@ -107,20 +109,17 @@ export const Preview = ({
 } = {
   isMobile: false,
 }) => {
-  const { openDialog } = useUIAppState();
-  const [isOpen, setIsOpen] = useState(false);
-
-  useEffect(() => {
-    setIsOpen(!!openDialog);
-  }, [openDialog]);
-
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   return (
     <>
-      <PreviewButton onPreview={() => setIsOpen(true)} isMobile={isMobile} />
+      <PreviewButton
+        onPreview={() => setIsPreviewOpen(true)}
+        isMobile={isMobile}
+      />
       <PreviewDialog
         elements={elements}
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
+        isOpen={isPreviewOpen}
+        onClose={() => setIsPreviewOpen(false)}
       />
     </>
   );
