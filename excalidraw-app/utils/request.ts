@@ -1,5 +1,6 @@
 import axios from "axios";
-import { message as AMessage } from "antd";
+
+import { showError } from "../utils/toast";
 
 // 创建axios实例
 const service = axios.create({
@@ -11,8 +12,8 @@ const service = axios.create({
 });
 
 const showSimpleError = (msg: string) => {
-  console.error('error',msg);
-  AMessage.error(msg);
+  // console.error('error',msg);
+  showError(msg);
 };
 
 // 请求拦截器

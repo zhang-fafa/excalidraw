@@ -75,6 +75,8 @@ import type {
 import type { ResolutionType } from "@excalidraw/common/utility-types";
 import type { ResolvablePromise } from "@excalidraw/common/utils";
 
+import { registerToast } from "./utils/toast";
+
 import { MyDialog } from "./components/common/Dialog";
 import { Save } from "./components/common/Save";
 
@@ -371,6 +373,16 @@ const ExcalidrawWrapper = () => {
 
   const [excalidrawAPI, excalidrawRefCallback] =
     useCallbackRefState<ExcalidrawImperativeAPI>();
+
+  // 注册全局 toast（使用 excalidraw 的内置 toast）
+  useEffect(() => {
+    if (!excalidrawAPI) {
+      return;
+    }
+    registerToast((message: string) => {
+      excalidrawAPI.setToast({ message });
+    });
+  }, [excalidrawAPI]);
 
   const [, setShareDialogState] = useAtom(shareDialogStateAtom);
   const [collabAPI] = useAtom(collabAPIAtom);
