@@ -849,7 +849,12 @@ const ExcalidrawWrapper = () => {
           return (
             <div className="top-right-ui">
               {collabError.message && <CollabError collabError={collabError} />}
-              <Preview isMobile={false} />
+              {excalidrawAPI ? (
+                <Preview
+                  elements={excalidrawAPI.getSceneElements()}
+                  isMobile={false}
+                />
+              ) : null}
             </div>
           );
         }}

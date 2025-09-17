@@ -14,11 +14,7 @@ import type { NonDeletedExcalidrawElement } from "@excalidraw/element/types";
 import { preview } from "../../../excalidraw-app/api/generate";
 import { devLog } from "../../../excalidraw-app/utils/devlog";
 
-import { useExcalidrawAppState } from "./App";
-
 const PreviewButton = ({ isMobile, onPreview }: { isMobile: boolean; onPreview: () => void }) => {
-  
-
   const resizedEyeIcon = React.cloneElement(eyeIcon, {
     style: { width: "16px", height: "16px", marginRight: "4px" },
   });
@@ -36,11 +32,11 @@ const PreviewButton = ({ isMobile, onPreview }: { isMobile: boolean; onPreview: 
   );
 };
 const PreviewDialog = ({
-  excalidrawAPI,
+  elements,
   isOpen,
   onClose,
 }: {
-  excalidrawAPI?: ExcalidrawImperativeAPI | null;
+  elements?: readonly NonDeletedExcalidrawElement[];
   isOpen: boolean;
   onClose: () => void;
 }) => {
@@ -57,13 +53,15 @@ const PreviewDialog = ({
       setError(null);
 
       try {
-        const elements = excalidrawAPI?.getSceneElements();
-        devLog("elements", elements);
         if (!elements || elements.length === 0) {
           setPreviewData(null);
           return;
         }
         const res = await preview(elements);
+        if (!res) {
+          setError("预览失败");
+          return;
+        }
         setPreviewData(res.data?.image);
       } catch (err) {
         setError(err instanceof Error ? err.message : "预览失败");
@@ -72,9 +70,9 @@ const PreviewDialog = ({
       }
     };
     fetchPreview();
-  }, [isOpen, excalidrawAPI]);
+  }, [isOpen, elements]);
 
-  if (!isOpen) {
+  if (!isOpen || !elements) {
     return null;
   }
   const renderContent = () => {
@@ -84,7 +82,6 @@ const PreviewDialog = ({
     if (error) {
       return <div>错误：{error}</div>;
     }
-    const elements = excalidrawAPI?.getSceneElements();
     if (!elements || elements.length === 0) {
       return <div>您的画布为空！</div>;
     }
@@ -103,11 +100,9 @@ const PreviewDialog = ({
 };
 export const Preview = ({
   elements,
-  excalidrawAPI,
   isMobile,
 }: {
   elements?: readonly NonDeletedExcalidrawElement[];
-  excalidrawAPI?: ExcalidrawImperativeAPI | null;
   isMobile: boolean;
 } = {
   isMobile: false,
@@ -118,11 +113,12 @@ export const Preview = ({
   useEffect(() => {
     setIsOpen(!!openDialog);
   }, [openDialog]);
+
   return (
     <>
       <PreviewButton onPreview={() => setIsOpen(true)} isMobile={isMobile} />
       <PreviewDialog
-        excalidrawAPI={excalidrawAPI}
+        elements={elements}
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
       />

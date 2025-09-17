@@ -102,7 +102,7 @@ export const MobileMenu = ({
                     appState.openDialog?.name !== "elementLinkSelector" && (
                       <DefaultSidebarTriggerTunnel.Out />
                     )}
-                  <Preview elements={elements} isMobile={true}/>
+                  <Preview elements={elements} isMobile/>
                   <PenModeButton
                     checked={appState.penMode}
                     onChange={() => onPenModeToggle(null)}
