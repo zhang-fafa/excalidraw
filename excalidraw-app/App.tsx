@@ -75,7 +75,7 @@ import type {
 import type { ResolutionType } from "@excalidraw/common/utility-types";
 import type { ResolvablePromise } from "@excalidraw/common/utils";
 
-import { registerToast } from "./utils/toast";
+import { registerToast, type ToastOptions } from "./utils/toast";
 
 import { MyDialog } from "./components/common/Dialog";
 import { Save } from "./components/common/Save";
@@ -374,13 +374,28 @@ const ExcalidrawWrapper = () => {
   const [excalidrawAPI, excalidrawRefCallback] =
     useCallbackRefState<ExcalidrawImperativeAPI>();
 
-  // 注册全局 toast（使用 excalidraw 的内置 toast）
+  // 注册全局 toast（使用 excalidraw 的内置 toast），并映射类型/时长
   useEffect(() => {
     if (!excalidrawAPI) {
       return;
     }
-    registerToast((message: string) => {
-      excalidrawAPI.setToast({ message });
+    registerToast((message: string, options?: ToastOptions) => {
+      const { type, durationMs, closable } = options || {};
+      const prefix =
+        type === "success"
+          ? "✅ "
+          : type === "error"
+          ? "❌ "
+          : type === "warning"
+          ? "⚠️ "
+          : type === "info"
+          ? "ℹ️ "
+          : "";
+      excalidrawAPI.setToast({
+        message: `${prefix}${message}`,
+        closable: !!closable,
+        duration: durationMs === "infinite" ? Infinity : durationMs,
+      });
     });
   }, [excalidrawAPI]);
 

@@ -115,3 +115,23 @@
     }
   }
 }
+
+/* 扩展 Excalidraw Toast 的类型样式 */
+.excalidraw {
+  .Toast.Toast--success {
+    background-color: #edf7ed;
+    .Toast__message { color: #2e7d32; }
+  }
+  .Toast.Toast--error {
+    background-color: #fdecea;
+    .Toast__message { color: #d32f2f; }
+  }
+  .Toast.Toast--warning {
+    background-color: #fff4e5;
+    .Toast__message { color: #ed6c02; }
+  }
+  .Toast.Toast--info {
+    background-color: #e8f4fd;
+    .Toast__message { color: #0277bd; }
+  }
+}
