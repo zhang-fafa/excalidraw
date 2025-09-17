@@ -9,9 +9,10 @@ import { t } from "../i18n";
 
 import Spinner from "./Spinner";
 
-export const LoadingMessage: React.FC<{ delay?: number; theme?: Theme }> = ({
+export const LoadingMessage: React.FC<{ delay?: number; theme?: Theme, message?: string }> = ({
   delay,
   theme,
+  message,
 }) => {
   const [isWaiting, setIsWaiting] = useState(!!delay);
 
@@ -38,7 +39,7 @@ export const LoadingMessage: React.FC<{ delay?: number; theme?: Theme }> = ({
       <div>
         <Spinner />
       </div>
-      <div className="LoadingMessage-text">{t("labels.loadingScene")}</div>
+      <div className="LoadingMessage-text">{message ?? t("labels.loadingScene")}</div>
     </div>
   );
 };

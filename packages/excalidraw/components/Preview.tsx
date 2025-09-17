@@ -3,12 +3,10 @@ import { Button } from "@excalidraw/excalidraw/components/Button";
 import { t } from "@excalidraw/excalidraw/i18n";
 import { eyeIcon } from "@excalidraw/excalidraw/components/icons";
 import { Dialog } from "@excalidraw/excalidraw/components/Dialog";
-
-import { useUIAppState } from "@excalidraw/excalidraw/context/ui-appState";
+import { LoadingMessage } from "./LoadingMessage"
 
 import React, { useState, useEffect } from "react";
 
-import { useExcalidrawSetAppState } from "./App";
 import type { NonDeletedExcalidrawElement } from "@excalidraw/element/types";
 
 import { preview } from "../../../excalidraw-app/api/generate";
@@ -75,10 +73,12 @@ const PreviewDialog = ({
   if (!isOpen || !elements) {
     return null;
   }
+  if (loading) {
+    return <div>
+      <LoadingMessage message="正在生成预览图..."/>
+    </div>;
+  }
   const renderContent = () => {
-    if (loading) {
-      return <div>正在生成预览...</div>;
-    }
     if (error) {
       return <div>错误：{error}</div>;
     }

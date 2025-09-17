@@ -55,6 +55,7 @@ import {
   useHandleLibrary,
 } from "@excalidraw/excalidraw/data/library";
 
+import { Button } from "@excalidraw/excalidraw/components/Button";
 import { Preview } from "@excalidraw/excalidraw/components/Preview";
 
 import type { RemoteExcalidrawElement } from "@excalidraw/excalidraw/data/reconcile";
@@ -347,6 +348,7 @@ const ExcalidrawWrapper = () => {
   const [isExportJSONDialogOpen, setIsExportJSONDialogOpen] = useState(false);
   // initial state
   // ---------------------------------------------------------------------------
+  const jsonTextareaRef = useRef<HTMLTextAreaElement>(null);
 
   const initialStatePromiseRef = useRef<{
     promise: ResolvablePromise<ExcalidrawInitialDataState | null>;
@@ -949,6 +951,7 @@ const ExcalidrawWrapper = () => {
             >
               <div>
                 <textarea
+                  ref={jsonTextareaRef}
                   name="json"
                   style={{
                     width: "100%",
@@ -957,8 +960,45 @@ const ExcalidrawWrapper = () => {
                     whiteSpace: "pre-wrap",
                   }}
                 ></textarea>
-                <div className="button-container">
-                  <button>导入</button>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    marginTop: "1rem",
+                  }}
+                >
+                  <Button
+                    className={clsx("collab-button")}
+                    onSelect={() => {
+                      if (
+                        !jsonTextareaRef ||
+                        !jsonTextareaRef.current ||
+                        !excalidrawAPI
+                      ) {
+                        return;
+                      }
+                      try {
+                        const val = JSON.parse(jsonTextareaRef.current.value);
+                        excalidrawAPI.updateScene({
+                          elements: val,
+                        });
+                        excalidrawAPI!.setToast({ message: "导入成功！" });
+                        setIsImportJSONDialogOpen(false);
+                      } catch (error) {
+                        // console.error(error);
+                        excalidrawAPI!.setToast({
+                          message: `导入失败！${error}`,
+                        });
+                      }
+                    }}
+                    style={{
+                      position: "relative",
+                      width: "auto",
+                      padding: "0 20px",
+                    }}
+                  >
+                    导入
+                  </Button>
                 </div>
               </div>
             </MyDialog>
@@ -981,8 +1021,33 @@ const ExcalidrawWrapper = () => {
                 >
                   {JSON.stringify(excalidrawAPI.getSceneElements())}
                 </textarea>
-                <div className="button-container">
-                  <button>复制</button>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    marginTop: "1rem",
+                  }}
+                >
+                  <Button
+                    className={clsx("collab-button")}
+                    onSelect={() => {
+                      navigator.clipboard
+                        .writeText(
+                          JSON.stringify(excalidrawAPI.getSceneElements()),
+                        )
+                        .then(() => {
+                          excalidrawAPI!.setToast({ message: "复制成功！" });
+                          setIsExportJSONDialogOpen(false);
+                        });
+                    }}
+                    style={{
+                      position: "relative",
+                      width: "auto",
+                      padding: "0 20px",
+                    }}
+                  >
+                    复制
+                  </Button>
                 </div>
               </div>
             </MyDialog>
