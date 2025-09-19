@@ -876,8 +876,13 @@ const ExcalidrawWrapper = () => {
         autoFocus={true}
         theme={editorTheme}
         renderTopRightUI={(isMobile) => {
-          if (isMobile || !collabAPI || isCollabDisabled) {
-            return null;
+          if ((isMobile || !collabAPI || isCollabDisabled) && excalidrawAPI) {
+            return (
+              <Preview
+                elements={excalidrawAPI.getSceneElements()}
+                isMobile={true}
+              />
+            );
           }
           return (
             <div className="top-right-ui">
