@@ -33,7 +33,7 @@ body.excalidraw-cursor-resize * {
     Roboto, Helvetica, Arial, sans-serif;
   font-family: var(--ui-font);
 
-  position: relative;
+  position: absolute;
   overflow: hidden;
   color: var(--text-primary-color);
   display: flex;

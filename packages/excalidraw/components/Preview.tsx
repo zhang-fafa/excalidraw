@@ -9,9 +9,6 @@ import React, { useState, useEffect } from "react";
 
 import type { NonDeletedExcalidrawElement } from "@excalidraw/element/types";
 
-import { preview } from "../../../excalidraw-app/api/generate";
-import { devLog } from "../../../excalidraw-app/utils/devlog";
-
 const PreviewButton = ({ isMobile, onPreview }: { isMobile: boolean; onPreview: () => void }) => {
   const resizedEyeIcon = React.cloneElement(eyeIcon, {
     style: { width: "16px", height: "16px", marginRight: "4px" },
@@ -33,14 +30,20 @@ const PreviewDialog = ({
   elements,
   isOpen,
   onClose,
+  onPreview,
 }: {
   elements?: readonly NonDeletedExcalidrawElement[];
   isOpen: boolean;
   onClose: () => void;
+  onPreview?: (elements: readonly NonDeletedExcalidrawElement[]) =>  Promise<any>;
 }) => {
   const [previewData, setPreviewData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  if (!onPreview) {
+    return null;
+  }
 
   useEffect(() => {
     if (!isOpen) {
@@ -55,7 +58,7 @@ const PreviewDialog = ({
           setPreviewData(null);
           return;
         }
-        const res = await preview(elements);
+        const res = await onPreview(elements);
         if (!res) {
           setError("预览失败");
           return;
@@ -103,9 +106,11 @@ const PreviewDialog = ({
 export const Preview = ({
   elements,
   isMobile,
+  getPreview,
 }: {
   elements?: readonly NonDeletedExcalidrawElement[];
   isMobile: boolean;
+  getPreview?: (elements: readonly NonDeletedExcalidrawElement[]) => Promise<any>;
 } = {
   isMobile: false,
 }) => {
@@ -120,6 +125,7 @@ export const Preview = ({
         elements={elements}
         isOpen={isPreviewOpen}
         onClose={() => setIsPreviewOpen(false)}
+        onPreview={getPreview}
       />
     </>
   );

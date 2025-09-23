@@ -280,6 +280,7 @@ export {
 
 export { Sidebar } from "./components/Sidebar/Sidebar";
 export { Button } from "./components/Button";
+export { Preview } from "./components/Preview";
 export { Footer };
 export { MainMenu };
 export { Ellipsify } from "./components/Ellipsify";

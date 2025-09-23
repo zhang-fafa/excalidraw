@@ -31,6 +31,7 @@
       "@excalidraw/utils/*": ["./packages/utils/src/*"]
     }
   },
-  "include": ["packages", "excalidraw-app"],
+  "include": ["packages"], //只打包核心包
+  // "include": ["packages", "excalidraw-app"], //打包所有包(包含核心包和应用程序包)
   "exclude": ["examples", "dist", "types", "tests"]
 }
