@@ -281,6 +281,7 @@ export {
 export { Sidebar } from "./components/Sidebar/Sidebar";
 export { Button } from "./components/Button";
 export { Preview } from "./components/Preview";
+export { Dialog, type DialogSize } from "./components/Dialog";
 export { Footer };
 export { MainMenu };
 export { Ellipsify } from "./components/Ellipsify";
@@ -308,3 +309,5 @@ export { getDataURL } from "./data/blob";
 export { isElementLink } from "@excalidraw/element";
 
 export { setCustomTextMetricsProvider } from "@excalidraw/element";
+
+export type { MermaidToExcalidrawLibProps } from "./components/TTDDialog/common";
