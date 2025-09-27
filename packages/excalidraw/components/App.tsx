@@ -7884,7 +7884,7 @@ class App extends React.Component<AppProps, AppState> {
       x: gridX - placeholderSize / 2,
       y: gridY - placeholderSize / 2,
       width: placeholderSize,
-      height: placeholderSize,
+      height: placeholderSize
     });
   };
 

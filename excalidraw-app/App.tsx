@@ -138,7 +138,7 @@ import DebugCanvas, {
   isVisualDebuggerEnabled,
   loadSavedDebugState,
 } from "./components/DebugCanvas";
-import { AIComponents } from "./components/AI";
+// import { AIComponents } from "./components/AI";
 import { ExcalidrawPlusIframeExport } from "./ExcalidrawPlusIframeExport";
 
 import "./index.scss";
@@ -200,7 +200,7 @@ const shareableLinkConfirmDialog = {
   description: (
     <Trans
       i18nKey="overwriteConfirm.modal.shareableLink.description"
-      bold={(text) => <strong>{text}111</strong>}
+      bold={(text) => <strong>{text}</strong>}
       br={() => <br />}
     />
   ),
@@ -945,7 +945,7 @@ const ExcalidrawWrapper = () => {
           )}
         </OverwriteConfirmDialog>
         <AppFooter onChange={() => excalidrawAPI?.refresh()} />
-        {excalidrawAPI && <AIComponents excalidrawAPI={excalidrawAPI} />}
+        {/* {excalidrawAPI && <AIComponents excalidrawAPI={excalidrawAPI} />} */}
 
         <TTDDialogTrigger />
         {isCollaborating && isOffline && (

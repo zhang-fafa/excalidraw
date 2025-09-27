@@ -129,6 +129,7 @@ export const CLASSES = {
   ZOOM_ACTIONS: "zoom-actions",
   SEARCH_MENU_INPUT_WRAPPER: "layer-ui__search-inputWrapper",
   CONVERT_ELEMENT_TYPE_POPUP: "ConvertElementTypePopup",
+  ElEMENT_LAYER: 'element-layer'
 };
 
 export const CJK_HAND_DRAWN_FALLBACK_FONT = "Xiaolai";
@@ -357,7 +358,7 @@ export const MQ_RIGHT_SIDEBAR_MIN_WIDTH = 1229;
 export const MAX_DECIMALS_FOR_SVG_EXPORT = 2;
 
 export const EXPORT_SCALES = [1, 2, 3];
-export const DEFAULT_EXPORT_PADDING = 10; // px
+export const DEFAULT_EXPORT_PADDING = 0; // px
 
 export const DEFAULT_MAX_IMAGE_WIDTH_OR_HEIGHT = 1440;
 

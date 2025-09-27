@@ -102,7 +102,9 @@
         pointer-events: var(--ui-pointerEvents);
       }
     }
-
+    .layer-ui__wrapper__footer-left{
+      display: flex;
+    }
     .layer-ui__wrapper__footer-left,
     .footer-center,
     .layer-ui__wrapper__footer-right {

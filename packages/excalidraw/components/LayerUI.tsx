@@ -222,7 +222,7 @@ const LayerUI = ({
         style={{
           // we want to make sure this doesn't overflow so subtracting the
           // approximate height of hamburgerMenu + footer
-          maxHeight: `${appState.height - 166}px`,
+          maxHeight: `${appState.height - 466}px`,
         }}
       >
         <SelectedShapeActions
@@ -548,6 +548,7 @@ const LayerUI = ({
               actionManager={actionManager}
               showExitZenModeBtn={showExitZenModeBtn}
               renderWelcomeScreen={renderWelcomeScreen}
+              app={app}
             />
             {appState.scrolledOutside && (
               <button

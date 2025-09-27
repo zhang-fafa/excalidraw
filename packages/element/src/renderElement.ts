@@ -471,17 +471,51 @@ const drawElementOnCanvas = (
               height: img.naturalHeight,
             };
 
-        context.drawImage(
-          img,
-          x,
-          y,
-          width,
-          height,
-          0 /* hardcoded for the selection box*/,
-          0,
-          element.width,
-          element.height,
-        );
+        // 添加 object-fit: cover 逻辑
+        const objectFit = "cover"; // 默认使用 cover
+        if (objectFit === "cover") {
+          // 计算 object-fit: cover 的参数
+          const sourceAspectRatio = width / height;
+          const containerAspectRatio = element.width / element.height;
+          let sourceX = x;
+          let sourceY = y;
+          let sourceWidth = width;
+          let sourceHeight = height;
+          if (sourceAspectRatio > containerAspectRatio) {
+            // 源图片更宽，需要裁剪左右两边
+            const newSourceWidth = height * containerAspectRatio;
+            sourceX = x + (width - newSourceWidth) / 2;
+            sourceWidth = newSourceWidth;
+          } else if (sourceAspectRatio < containerAspectRatio) {
+            // 源图片更高，需要裁剪上下两边
+            const newSourceHeight = width / containerAspectRatio;
+            sourceY = y + (height - newSourceHeight) / 2;
+            sourceHeight = newSourceHeight;
+          }
+          context.drawImage(
+            img,
+            sourceX,
+            sourceY,
+            sourceWidth,
+            sourceHeight,
+            0,
+            0,
+            element.width,
+            element.height,
+          );
+        }else{
+          context.drawImage(
+            img,
+            x,
+            y,
+            width,
+            height,
+            0 /* hardcoded for the selection box*/,
+            0,
+            element.width,
+            element.height,
+          );
+        }
       } else {
         drawImagePlaceholder(element, context);
       }
