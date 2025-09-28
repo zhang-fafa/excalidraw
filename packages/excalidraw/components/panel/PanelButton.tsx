@@ -1,7 +1,8 @@
 type PanelButtonProps = {
+  status: boolean;
   className?: string;
   id?: string;
-  onClick?(): void;
+  onClick: (showPanel: boolean)=> void;
   children?: React.ReactNode;
   title: string;
   style?: React.CSSProperties;
@@ -21,7 +22,7 @@ export const PanelButton = (props: PanelButtonProps) => (
     className={`help-icon ${props.className}`}
     onClick={(e)=>{
       e.stopPropagation();
-      props.onClick?.()
+      props.onClick(!props.status)
     }}
     type="button"
     title={props.title}

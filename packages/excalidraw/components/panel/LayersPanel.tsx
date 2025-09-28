@@ -18,15 +18,17 @@ import {
 } from "../icons";
 
 interface LayersPanelProps {
+  status: boolean,
   elements: readonly NonDeletedExcalidrawElement[];
   selectedElementIds: Record<string, boolean>;
-  onElementSelect: (elementId: string, multiSelect: boolean) => void;
-  onElementToggleVisibility: (elementId: string) => void;
-  onElementDelete: (elementId: string) => void;
-  onElementRename: (elementId: string, newName: string) => void;
+  onElementSelect: (element: NonDeletedExcalidrawElement, multiSelect: boolean) => Promise<void>;
+  onElementToggleVisibility: (element: NonDeletedExcalidrawElement) => void;
+  onElementDelete: (element: NonDeletedExcalidrawElement) => void;
+  onElementRename: (element: NonDeletedExcalidrawElement, newName: string) => void;
 }
 
 export const LayersPanel: React.FC<LayersPanelProps> = ({
+  status,
   elements,
   selectedElementIds,
   onElementSelect,
@@ -80,20 +82,20 @@ export const LayersPanel: React.FC<LayersPanelProps> = ({
   };
 
   return (
-    <div className="layers-panel">      
+    <div className={[!status ? '' : 'hidden', 'layers-panel'].join(" ")}>      
       <div className="layers-list">
         {elements.map((element, index) => (
           <LayerItem
             key={element.id}
             element={element}
-            index={elements.length - index} // 显示层级顺序
+            index={index + 1} // 显示层级顺序
             isSelected={!!selectedElementIds[element.id]}
             icon={getElementIcon(element)}
             displayName={getElementDisplayName(element)}
-            onSelect={(multiSelect) => onElementSelect(element.id, multiSelect)}
-            onToggleVisibility={() => onElementToggleVisibility(element.id)}
-            onDelete={() => onElementDelete(element.id)}
-            onRename={(newName) => onElementRename(element.id, newName)}
+            onSelect={(multiSelect) => onElementSelect(element, multiSelect)}
+            onToggleVisibility={() => onElementToggleVisibility(element)}
+            onDelete={() => onElementDelete(element)}
+            onRename={(newName) => onElementRename(element, newName)}
           />
         ))}
       </div>

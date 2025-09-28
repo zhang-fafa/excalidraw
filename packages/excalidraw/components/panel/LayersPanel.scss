@@ -16,6 +16,14 @@
   overflow-y: auto;
   max-height: 300px;
   width: 12.5rem;
+  &.hidden{
+    display: none;
+  }
+  .layers-list{
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+  }
 }
 .layers-search {
   margin: 8px 0;
