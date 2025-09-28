@@ -153,6 +153,9 @@ export type ExcalidrawImageElement = _ExcalidrawElementBase &
     scale: [number, number];
     /** whether an element is cropped */
     crop: ImageCrop | null;
+
+    // 新增字段
+    imageUrl: string | null; // 图片链接
   }>;
 
 export type InitializedExcalidrawImageElement = MarkNonNullable<

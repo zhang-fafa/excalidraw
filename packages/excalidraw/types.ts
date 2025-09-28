@@ -680,6 +680,7 @@ export type AppProps = Merge<
     isCollaborating: boolean;
     children?: React.ReactNode;
     aiEnabled: boolean;
+    imageUploadUrl?: string | null;
   }
 >;
 

@@ -615,6 +615,9 @@ class App extends React.Component<AppProps, AppState> {
   public flowChartCreator: FlowChartCreator = new FlowChartCreator();
   private flowChartNavigator: FlowChartNavigator = new FlowChartNavigator();
 
+  //图片上传接口
+  private imageUploadUrl: string | null;
+
   hitLinkElement?: NonDeletedExcalidrawElement;
   lastPointerDownEvent: React.PointerEvent<HTMLElement> | null = null;
   lastPointerUpEvent: React.PointerEvent<HTMLElement> | PointerEvent | null =
@@ -678,6 +681,7 @@ class App extends React.Component<AppProps, AppState> {
       objectsSnapModeEnabled = false,
       theme = defaultAppState.theme,
       name = `${t("labels.untitled")}-${getDateTime()}`,
+      imageUploadUrl = null,
     } = props;
     this.state = {
       ...defaultAppState,
@@ -766,6 +770,8 @@ class App extends React.Component<AppProps, AppState> {
     this.actionManager.registerAll(actions);
     this.actionManager.registerAction(createUndoAction(this.history));
     this.actionManager.registerAction(createRedoAction(this.history));
+
+    this.imageUploadUrl = imageUploadUrl
   }
 
   updateEditorAtom = <Value, Args extends unknown[], Result>(
@@ -7884,7 +7890,8 @@ class App extends React.Component<AppProps, AppState> {
       x: gridX - placeholderSize / 2,
       y: gridY - placeholderSize / 2,
       width: placeholderSize,
-      height: placeholderSize
+      height: placeholderSize,
+      imageUrl: '111'
     });
   };
 
@@ -10159,6 +10166,7 @@ class App extends React.Component<AppProps, AppState> {
           }
 
           const imageHTML = await this.imageCache.get(fileId)?.image;
+          
 
           if (
             imageHTML &&
@@ -10224,6 +10232,7 @@ class App extends React.Component<AppProps, AppState> {
         ) as (keyof typeof IMAGE_MIME_TYPES)[],
         multiple: true,
       });
+      // console.log('上传的图片:',imageFiles)
 
       this.insertImages(imageFiles, x, y);
     } catch (error: any) {
@@ -10422,6 +10431,44 @@ class App extends React.Component<AppProps, AppState> {
     }
   };
 
+
+  //图片上传到服务器
+  public uploadImage = async (url: string, files: File[]): Promise<any> => {
+    try {
+      const uploadPromises = files.map(async (file, index) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("index", index.toString());
+        
+        const response = await fetch(url, {
+          method: "POST",
+          body: formData,
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Upload failed for file ${index}: ${response.statusText}`);
+        }
+        
+        const result = await response.json();
+        return {
+          index,
+          result,
+        };
+      });
+      
+      const results = await Promise.all(uploadPromises);
+      
+      // 按原始索引排序
+      return results
+        .sort((a, b) => a.index - b.index)
+        .map(item => item);
+        
+    } catch (error) {
+      console.error('Upload error:', error);
+      throw error;
+    }
+  };
+
   private insertImages = async (
     imageFiles: File[],
     sceneX: number,
@@ -10436,6 +10483,11 @@ class App extends React.Component<AppProps, AppState> {
       gridPadding,
     );
     placeholders.forEach((el) => this.scene.insertElement(el));
+
+    let imageUploadResults: any[] = [];
+    if(this.imageUploadUrl){
+      imageUploadResults = await this.uploadImage(this.imageUploadUrl, imageFiles);
+    }
 
     // Create, position, insert and select initialized (replacing placeholders)
     const initialized = await Promise.all(
@@ -10462,7 +10514,15 @@ class App extends React.Component<AppProps, AppState> {
 
     const nextElements = this.scene
       .getElementsIncludingDeleted()
-      .map((el) => positionedMap.get(el.id) ?? initializedMap.get(el.id) ?? el);
+      .map((el,i) => {
+        const baseElement = positionedMap.get(el.id) ?? initializedMap.get(el.id) ?? el;
+        const uploadResult = imageUploadResults[i];
+        const imageUrl = uploadResult?.url || uploadResult?.path || '';
+        return {
+          ...baseElement,
+          ...(imageUrl && { imageUrl })
+        }
+      });
 
     this.updateScene({
       appState: {
@@ -10479,6 +10539,7 @@ class App extends React.Component<AppProps, AppState> {
       // actionFinalize after all state values have been updated
       this.actionManager.executeAction(actionFinalize);
     });
+    console.log('图片插入canvas完成')
   };
 
   private handleAppOnDrop = async (event: React.DragEvent<HTMLDivElement>) => {
