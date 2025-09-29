@@ -25,10 +25,32 @@ export const loadHTMLImageElement = (dataURL: DataURL) => {
       resolve(image);
     };
     image.onerror = (error) => {
+      console.error("Error loading image:", error);
       reject(error);
     };
     image.src = dataURL;
   });
+};
+
+const validateBase64Image = (dataURL: string): boolean => {
+  try {
+    // 检查格式
+    if (!dataURL.startsWith('data:image/')) {
+      return false;
+    }
+    
+    // 提取 base64 部分
+    const base64Data = dataURL.split(',')[1];
+    if (!base64Data) {
+      return false;
+    }
+    
+    // 检查 base64 格式
+    const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/;
+    return base64Regex.test(base64Data);
+  } catch {
+    return false;
+  }
 };
 
 /** NOTE: updates cache even if already populated with given image. Thus,
@@ -55,6 +77,14 @@ export const updateImageCache = async ({
             try {
               if (fileData.mimeType === MIME_TYPES.binary) {
                 throw new Error("Only images can be added to ImageCache");
+              }
+              // 添加数据验证
+              if (!fileData.dataURL) {
+                throw new Error("No dataURL found for image");
+              }
+              // 验证 base64 数据
+              if (!validateBase64Image(fileData.dataURL)) {
+                throw new Error("Invalid base64 image data");
               }
 
               const imagePromise = loadHTMLImageElement(fileData.dataURL);

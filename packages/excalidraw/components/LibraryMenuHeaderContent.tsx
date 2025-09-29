@@ -228,7 +228,8 @@ export const LibraryDropdownMenuButton: React.FC<{
               {resetLabel}
             </DropdownMenu.Item>
           )}
-          {itemsSelected && (
+          {/* 注销发布按钮 */}
+          {/* {itemsSelected && (
             <DropdownMenu.Item
               icon={publishIcon}
               onSelect={() => setShowPublishLibraryDialog(true)}
@@ -236,7 +237,7 @@ export const LibraryDropdownMenuButton: React.FC<{
             >
               {t("buttons.publishLibrary")}
             </DropdownMenu.Item>
-          )}
+          )} */}
         </DropdownMenu.Content>
       </DropdownMenu>
     );

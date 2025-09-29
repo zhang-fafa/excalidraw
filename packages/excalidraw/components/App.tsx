@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import throttle from "lodash.throttle";
-import React, { useContext } from "react";
+import React, { cache, useContext } from "react";
 import { flushSync } from "react-dom";
 import rough from "roughjs/bin/rough";
 import { nanoid } from "nanoid";
@@ -7891,7 +7891,7 @@ class App extends React.Component<AppProps, AppState> {
       y: gridY - placeholderSize / 2,
       width: placeholderSize,
       height: placeholderSize,
-      imageUrl: '111'
+      imageUrl: this.state.currentItemUrl || null
     });
   };
 
@@ -10152,7 +10152,6 @@ class App extends React.Component<AppProps, AppState> {
               lastRetrieved: Date.now(),
             },
           ]);
-
           if (!this.imageCache.get(fileId)) {
             this.addNewImagesToImageCache();
 
@@ -10215,25 +10214,32 @@ class App extends React.Component<AppProps, AppState> {
     );
   };
 
-  private onImageToolbarButtonClick = async () => {
+
+  //url转图片文件
+  private urlToFile = async (url: string) => {
+    let decodedUrl: string[] = url.split("/")
+    if(!Array.isArray(decodedUrl)){
+      decodedUrl = url.split("%2F")
+    }
+    const name = decodedUrl.pop() as string;
+    // const name = "image.png";
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const file = new File([blob], name, {
+      type: blob.type,
+    });
+    return file;
+  };
+
+  private insertImagesAtCenter = async (getImageFiles: () => Promise<File[]>) => {
     try {
       const clientX = this.state.width / 2 + this.state.offsetLeft;
       const clientY = this.state.height / 2 + this.state.offsetTop;
-
       const { x, y } = viewportCoordsToSceneCoords(
         { clientX, clientY },
         this.state,
       );
-
-      const imageFiles = await fileOpen({
-        description: "Image",
-        extensions: Object.keys(
-          IMAGE_MIME_TYPES,
-        ) as (keyof typeof IMAGE_MIME_TYPES)[],
-        multiple: true,
-      });
-      // console.log('上传的图片:',imageFiles)
-
+      const imageFiles = await getImageFiles();
       this.insertImages(imageFiles, x, y);
     } catch (error: any) {
       if (error.name !== "AbortError") {
@@ -10253,6 +10259,30 @@ class App extends React.Component<AppProps, AppState> {
         },
       );
     }
+  };
+
+  public insertUrlImages = async (url: string) => {
+    this.setState({
+      currentItemUrl: url,
+    })
+    await this.insertImagesAtCenter(async () => {
+      return [await this.urlToFile(url)];
+    });
+  };
+
+  private onImageToolbarButtonClick = async () => {
+    // const url = '/apis/file/getImage?url=https://xxxxxx/upload/image/202509/68d7876c46b36.png'
+    // await this.insertUrlImages(url);
+
+    await this.insertImagesAtCenter(async () => {
+      return await fileOpen({
+        description: "Image",
+        extensions: Object.keys(
+          IMAGE_MIME_TYPES,
+        ) as (keyof typeof IMAGE_MIME_TYPES)[],
+        multiple: true,
+      });
+    });
   };
 
   private getImageNaturalDimensions = (
@@ -10315,6 +10345,40 @@ class App extends React.Component<AppProps, AppState> {
     return { updatedFiles, erroredFiles };
   };
 
+  private fetchImages = async (
+    imageElements: InitializedExcalidrawImageElement[],
+  ): Promise<void> => { 
+    await Promise.all(
+      imageElements.map(async (element) => {
+        if(element.imageUrl){
+          try {
+            const file = await this.urlToFile(element.imageUrl)
+            // 将文件转换为 dataURL
+            const dataURL = await getDataURL(file);
+
+            // 构造 BinaryFiles 对象
+            const binaryFiles: BinaryFiles = {
+              [element.fileId]: {
+                mimeType: file.type as ValueOf<typeof IMAGE_MIME_TYPES>,
+                id: element.fileId,
+                dataURL: dataURL,
+                created: Date.now(),
+                lastRetrieved: Date.now(),
+              }
+            };
+
+            await this.updateImageCache(
+              [element],
+              binaryFiles,
+            );
+          } catch (error) {
+            console.error(`❌ Failed to fetch image for element ${element.id}:`, error);
+          }
+        }
+      })
+    )
+  };
+
   /** adds new images to imageCache and re-renders if needed */
   private addNewImagesToImageCache = async (
     imageElements: InitializedExcalidrawImageElement[] = getInitializedImageElements(
@@ -10326,7 +10390,11 @@ class App extends React.Component<AppProps, AppState> {
       (element) => !element.isDeleted && !this.imageCache.has(element.fileId),
     );
 
+    // console.log("uncachedImageElements",uncachedImageElements)
     if (uncachedImageElements.length) {
+      //异步获取图片文件
+      await this.fetchImages(uncachedImageElements)
+
       const { updatedFiles } = await this.updateImageCache(
         uncachedImageElements,
         files,
@@ -10485,8 +10553,14 @@ class App extends React.Component<AppProps, AppState> {
     placeholders.forEach((el) => this.scene.insertElement(el));
 
     let imageUploadResults: any[] = [];
-    if(this.imageUploadUrl){
+
+    //上传接口不为空 且 图片url为空时，上传图片到服务器
+    if(this.imageUploadUrl && !this.state.currentItemUrl){
       imageUploadResults = await this.uploadImage(this.imageUploadUrl, imageFiles);
+    }else{
+      // this.setState({
+      //   errorMessage: '请在Excalidraw组件中设置图片上传接口',
+      // });
     }
 
     // Create, position, insert and select initialized (replacing placeholders)
@@ -10539,7 +10613,7 @@ class App extends React.Component<AppProps, AppState> {
       // actionFinalize after all state values have been updated
       this.actionManager.executeAction(actionFinalize);
     });
-    console.log('图片插入canvas完成')
+    // console.log('图片插入canvas完成')
   };
 
   private handleAppOnDrop = async (event: React.DragEvent<HTMLDivElement>) => {

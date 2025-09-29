@@ -153,7 +153,7 @@ const LibraryMenuContent = memo(
           onSelectItems={onSelectItems}
           selectedItems={selectedItems}
         />
-        {showBtn && (
+        {/* {showBtn && (
           <LibraryMenuControlButtons
             className="library-menu-control-buttons--at-bottom"
             style={{ padding: "16px 12px 0 12px" }}
@@ -161,7 +161,7 @@ const LibraryMenuContent = memo(
             libraryReturnUrl={libraryReturnUrl}
             theme={theme}
           />
-        )}
+        )} */}
       </LibraryMenuWrapper>
     );
   },
