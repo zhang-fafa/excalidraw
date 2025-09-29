@@ -81,6 +81,7 @@ const LibraryMenuContent = memo(
     onSelectItems: (id: LibraryItem["id"][]) => void;
   }) => {
     const [libraryItemsData] = useAtom(libraryItemsAtom);
+    console.log('素材库数据：',libraryItemsData)
 
     const _onAddToLibrary = useCallback(
       (elements: LibraryItem["elements"]) => {
@@ -120,6 +121,8 @@ const LibraryMenuContent = memo(
       [libraryItemsData],
     );
 
+    console.log('libraryItems',libraryItems)
+
     if (
       libraryItemsData.status === "loading" &&
       !libraryItemsData.isInitialized
@@ -153,6 +156,8 @@ const LibraryMenuContent = memo(
           onSelectItems={onSelectItems}
           selectedItems={selectedItems}
         />
+
+        {/* 跳转Excalidraw官方公共素材库按钮 */}
         {/* {showBtn && (
           <LibraryMenuControlButtons
             className="library-menu-control-buttons--at-bottom"
