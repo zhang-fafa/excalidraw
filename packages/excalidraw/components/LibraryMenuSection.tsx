@@ -73,7 +73,9 @@ export const LibraryMenuSection = memo(
               key={item?.id ?? i}
             />
           ) : (
-            <EmptyLibraryUnit key={i} />
+            <>
+              <EmptyLibraryUnit key={i} />
+            </>
           );
         })}
       </>
