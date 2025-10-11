@@ -697,70 +697,80 @@ export const actionChangeFontSize = register({
   perform: (elements, appState, value, app) => {
     return changeFontSize(elements, appState, app, () => value, value);
   },
-  PanelComponent: ({ elements, appState, updateData, app }) => (
-    <fieldset>
-      <legend>{t("labels.fontSize")}</legend>
-      <div className="buttonList">
-        <RadioSelection
-          group="font-size"
-          options={[
-            {
-              value: 16,
-              text: t("labels.small"),
-              icon: FontSizeSmallIcon,
-              testId: "fontSize-small",
-            },
-            {
-              value: 20,
-              text: t("labels.medium"),
-              icon: FontSizeMediumIcon,
-              testId: "fontSize-medium",
-            },
-            {
-              value: 28,
-              text: t("labels.large"),
-              icon: FontSizeLargeIcon,
-              testId: "fontSize-large",
-            },
-            {
-              value: 36,
-              text: t("labels.veryLarge"),
-              icon: FontSizeExtraLargeIcon,
-              testId: "fontSize-veryLarge",
-            },
-          ]}
-          value={getFormValue(
-            elements,
-            app,
-            (element) => {
-              if (isTextElement(element)) {
-                return element.fontSize;
-              }
-              const boundTextElement = getBoundTextElement(
-                element,
-                app.scene.getNonDeletedElementsMap(),
-              );
-              if (boundTextElement) {
-                return boundTextElement.fontSize;
-              }
-              return null;
-            },
-            (element) =>
-              isTextElement(element) ||
-              getBoundTextElement(
-                element,
-                app.scene.getNonDeletedElementsMap(),
-              ) !== null,
-            (hasSelection) =>
-              hasSelection
-                ? null
-                : appState.currentItemFontSize || DEFAULT_FONT_SIZE,
-          )}
-          onChange={(value) => updateData(value)}
-        />
-      </div>
-    </fieldset>
-  ),
+  PanelComponent: ({ elements, appState, updateData, app }) => {
+    const generateFontSizeOptions = () => {
+      const options = [];
+      
+      // 小字号：8-24px，每2px递增
+      for (let size = 8; size <= 24; size += 2) {
+        options.push({ value: size, label: `${size}px` });
+      }
+      
+      // 中字号：28-72px，每4px递增
+      for (let size = 28; size <= 72; size += 4) {
+        options.push({ value: size, label: `${size}px` });
+      }
+      
+      // 大字号：80-200px，每8px递增
+      for (let size = 80; size <= 200; size += 8) {
+        options.push({ value: size, label: `${size}px` });
+      }
+      
+      return options;
+    };
+    // 定义字体大小选项
+    const fontSizeOptions = generateFontSizeOptions();
+    const currentValue = getFormValue(
+      elements,
+      app,
+      (element) => {
+        if (isTextElement(element)) {
+          return element.fontSize;
+        }
+        const boundTextElement = getBoundTextElement(
+          element,
+          app.scene.getNonDeletedElementsMap(),
+        );
+        if (boundTextElement) {
+          return boundTextElement.fontSize;
+        }
+        return null;
+      },
+      (element) =>
+        isTextElement(element) ||
+        getBoundTextElement(
+          element,
+          app.scene.getNonDeletedElementsMap(),
+        ) !== null,
+      (hasSelection) =>
+        hasSelection
+          ? null
+          : appState.currentItemFontSize || DEFAULT_FONT_SIZE,
+    );
+    return (
+      <fieldset>
+        <legend>{t("labels.fontSize")}</legend>
+        <div className="buttonList">
+          <select
+            className="dropdown-select dropdown-select--floating"
+            value={currentValue || DEFAULT_FONT_SIZE}
+            onChange={(event) => {
+              const fontSize = parseInt(event.target.value, 10);
+              updateData(fontSize);
+            }}
+            title={t("labels.fontSize")}
+            aria-label={t("labels.fontSize")}
+          >
+            {fontSizeOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </fieldset>
+    );
+  },
 });
 
 export const actionDecreaseFontSize = register({

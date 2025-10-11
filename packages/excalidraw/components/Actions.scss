@@ -91,3 +91,23 @@
     }
   }
 }
+
+
+.dropdown-select--floating {
+  min-width: 80px;
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--color-gray-30);
+  border-radius: 4px;
+  background-color: var(--color-white);
+  font-size: 13px;
+  cursor: pointer;
+}
+.dropdown-select--floating:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-color: var(--color-primary);
+}
+.dropdown-select--floating:hover {
+  border-color: var(--color-gray-40);
+}
