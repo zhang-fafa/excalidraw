@@ -85,6 +85,7 @@ import { IconPicker } from "../components/IconPicker";
 // TextAlignTopIcon, TextAlignBottomIcon,TextAlignMiddleIcon,
 // ArrowHead icons
 import { Range } from "../components/Range";
+import { RoundnessRange } from "../components/RoundnessRange";
 import {
   ArrowheadArrowIcon,
   ArrowheadBarIcon,
@@ -1385,6 +1386,7 @@ export const actionChangeVerticalAlign = register({
   },
 });
 
+/** @deprecated Use actionChangeRoundnessSlider instead */
 export const actionChangeRoundness = register({
   name: "changeRoundness",
   label: "Change edge roundness",
@@ -1463,6 +1465,52 @@ export const actionChangeRoundness = register({
       </fieldset>
     );
   },
+});
+
+export const actionChangeRoundnessSlider = register({
+  name: "changeRoundnessSlider",
+  label: "Change edge roundness",
+  trackEvent: false,
+  perform: (elements, appState, value) => {
+    return {
+      elements: changeProperty(
+        elements,
+        appState,
+        (el) => {
+          if (isElbowArrow(el)) {
+            return el;
+          }
+          const roundnessValue = value / 100;
+          
+          return newElementWith(el, {
+            roundness: roundnessValue > 0 
+              ? {
+                  type: isUsingAdaptiveRadius(el.type)
+                    ? ROUNDNESS.ADAPTIVE_RADIUS
+                    : ROUNDNESS.PROPORTIONAL_RADIUS,
+                  value: roundnessValue,
+                }
+              : null,
+          });
+        },
+        true,
+      ),
+      appState: { 
+        ...appState, 
+        currentItemRoundness: value 
+      },
+      captureUpdate: CaptureUpdateAction.IMMEDIATELY,
+    };
+  },
+  PanelComponent: ({ app, updateData, renderAction }) => (
+    <fieldset>
+      <legend>{t("labels.edges")}</legend>
+      <div className="buttonList">
+        <RoundnessRange updateData={updateData} app={app} testId="roundness" />
+        {renderAction("togglePolygon")}
+      </div>
+    </fieldset>
+  ),
 });
 
 const getArrowheadOptions = (flip: boolean) => {

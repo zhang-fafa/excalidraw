@@ -103,6 +103,7 @@ export type ActionName =
   | "goToCollaborator"
   | "addToLibrary"
   | "changeRoundness"
+  | "changeRoundnessSlider"
   | "alignTop"
   | "alignBottom"
   | "alignLeft"

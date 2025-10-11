@@ -171,7 +171,9 @@
     "linkToElement": "Link to object",
     "wrapSelectionInFrame": "Wrap selection in frame",
     "tab": "Tab",
-    "shapeSwitch": "Switch shape"
+    "shapeSwitch": "Switch shape",
+    "roundness": "Roundness",
+    "roundnessPercentage": "Roundness: {{percentage}}%"
   },
   "elementLink": {
     "title": "Link to object",
