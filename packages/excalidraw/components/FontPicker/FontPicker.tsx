@@ -23,7 +23,7 @@ export const DEFAULT_FONTS = [
   {
     value: FONT_FAMILY.Excalifont,
     icon: FreedrawIcon,
-    text: t("labels.handDrawn"),
+    text: t("labels.handDrawn")+'111',
     testId: "font-family-hand-drawn",
   },
   {
