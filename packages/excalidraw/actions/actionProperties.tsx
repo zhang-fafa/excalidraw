@@ -513,17 +513,10 @@ export const actionChangeStrokeWidth = register({
     console.log('value', value);
     return {
       elements: changeProperty(elements, appState, (el) =>{
-        if (value === 0) {
-          // 完全移除描边
-          return newElementWith(el, {
-            strokeWidth: 0,
-            strokeColor: "transparent",
-          });
-        }else{
-          return newElementWith(el, {
-            strokeWidth: value,
-          });
-        }
+        return newElementWith(el, {
+          strokeWidth: value,
+          strokeColor: value ? DEFAULT_ELEMENT_STROKE_COLOR_PALETTE.black : DEFAULT_ELEMENT_STROKE_COLOR_PALETTE.transparent,
+        });
       }),
       appState: { ...appState, currentItemStrokeWidth: value },
       captureUpdate: CaptureUpdateAction.IMMEDIATELY,
@@ -536,6 +529,13 @@ export const actionChangeStrokeWidth = register({
         <RadioSelection
           group="stroke-width"
           options={[
+            // 添加0px选项
+            {
+              value: STROKE_WIDTH.zero,
+              text: '0px',
+              icon: StrokeWidthZeroIcon,
+              testId: "strokeWidth-zero",
+            },
             {
               value: STROKE_WIDTH.thin,
               text: t("labels.thin"),
@@ -553,14 +553,7 @@ export const actionChangeStrokeWidth = register({
               text: t("labels.extraBold"),
               icon: StrokeWidthExtraBoldIcon,
               testId: "strokeWidth-extraBold",
-            },
-            // 添加0px选项
-            {
-              value: 0,
-              text: '0px',
-              icon: StrokeWidthZeroIcon,
-              testId: "strokeWidth-zero",
-            },
+            }
           ]}
           value={getFormValue(
             elements,
