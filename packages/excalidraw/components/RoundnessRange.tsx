@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
-import "./Range.scss"; // 复用相同的样式
+import { t } from "../i18n";
+import "./Range.scss"; 
 import { 
-  isArrowElement,  // 添加这个导入
+  isArrowElement,  
 } from "../../element/src/typeChecks";
 
 import type { AppClassProperties } from "../types";
@@ -28,7 +29,7 @@ export const RoundnessRange = ({ updateData, app, testId }: RoundnessRangeProps)
     
     let elementRoundness = 0;
     if (element.roundness?.value !== undefined) {
-      elementRoundness = Math.round(element.roundness.value * 100);
+      elementRoundness = Math.round(element.roundness.value);
     } else if (element.roundness) {
       elementRoundness = 50; // 兼容旧版本的 boolean roundness
     }
@@ -42,7 +43,7 @@ export const RoundnessRange = ({ updateData, app, testId }: RoundnessRangeProps)
     return acc;
   }, firstElement && !isArrowElement(firstElement) && firstElement.hasOwnProperty("roundness") 
     ? (firstElement.roundness?.value !== undefined 
-        ? Math.round(firstElement.roundness.value * 100)
+        ? Math.round(firstElement.roundness.value)
         : (firstElement.roundness ? 50 : 0))
     : null);
 
@@ -67,7 +68,7 @@ export const RoundnessRange = ({ updateData, app, testId }: RoundnessRangeProps)
 
   return (
     <label className="control-label">
-      Roundness {/* 或者使用 t("labels.roundness") 如果翻译文件中有这个key */}
+      { t("labels.roundness") }
       <div className="range-wrapper">
         <input
           style={{

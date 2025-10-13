@@ -106,6 +106,7 @@ import {
   StrokeWidthBaseIcon,
   StrokeWidthBoldIcon,
   StrokeWidthExtraBoldIcon,
+  StrokeWidthZeroIcon,
   FontSizeSmallIcon,
   FontSizeMediumIcon,
   FontSizeLargeIcon,
@@ -509,12 +510,21 @@ export const actionChangeStrokeWidth = register({
   label: "labels.strokeWidth",
   trackEvent: false,
   perform: (elements, appState, value) => {
+    console.log('value', value);
     return {
-      elements: changeProperty(elements, appState, (el) =>
-        newElementWith(el, {
-          strokeWidth: value,
-        }),
-      ),
+      elements: changeProperty(elements, appState, (el) =>{
+        if (value === 0) {
+          // 完全移除描边
+          return newElementWith(el, {
+            strokeWidth: 0,
+            strokeColor: "transparent",
+          });
+        }else{
+          return newElementWith(el, {
+            strokeWidth: value,
+          });
+        }
+      }),
       appState: { ...appState, currentItemStrokeWidth: value },
       captureUpdate: CaptureUpdateAction.IMMEDIATELY,
     };
@@ -543,6 +553,13 @@ export const actionChangeStrokeWidth = register({
               text: t("labels.extraBold"),
               icon: StrokeWidthExtraBoldIcon,
               testId: "strokeWidth-extraBold",
+            },
+            // 添加0px选项
+            {
+              value: 0,
+              text: '0px',
+              icon: StrokeWidthZeroIcon,
+              testId: "strokeWidth-zero",
             },
           ]}
           value={getFormValue(
@@ -1480,8 +1497,7 @@ export const actionChangeRoundnessSlider = register({
           if (isElbowArrow(el)) {
             return el;
           }
-          const roundnessValue = value / 100;
-          
+          const roundnessValue = value;
           return newElementWith(el, {
             roundness: roundnessValue > 0 
               ? {
@@ -1502,14 +1518,8 @@ export const actionChangeRoundnessSlider = register({
       captureUpdate: CaptureUpdateAction.IMMEDIATELY,
     };
   },
-  PanelComponent: ({ app, updateData, renderAction }) => (
-    <fieldset>
-      <legend>{t("labels.edges")}</legend>
-      <div className="buttonList">
-        <RoundnessRange updateData={updateData} app={app} testId="roundness" />
-        {renderAction("togglePolygon")}
-      </div>
-    </fieldset>
+  PanelComponent: ({ app, updateData }) => (
+    <RoundnessRange updateData={updateData} app={app} testId="roundness" />
   ),
 });
 

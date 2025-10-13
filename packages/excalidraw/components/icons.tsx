@@ -1158,6 +1158,19 @@ export const StrokeWidthExtraBoldIcon = createIcon(
   modifiedTablerIconProps,
 );
 
+export const StrokeWidthZeroIcon = createIcon(
+  <text
+    x="10"
+    y="13"
+    fontSize="14"
+    fill="currentColor"
+    textAnchor="middle"
+  >
+    0
+  </text>,
+  modifiedTablerIconProps,
+);
+
 export const StrokeStyleSolidIcon = React.memo(({ theme }: { theme: Theme }) =>
   createIcon(
     <path
