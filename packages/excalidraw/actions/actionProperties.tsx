@@ -510,7 +510,6 @@ export const actionChangeStrokeWidth = register({
   label: "labels.strokeWidth",
   trackEvent: false,
   perform: (elements, appState, value) => {
-    console.log('value', value);
     return {
       elements: changeProperty(elements, appState, (el) =>{
         return newElementWith(el, {
