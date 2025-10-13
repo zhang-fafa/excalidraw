@@ -33,3 +33,11 @@
   style: normal;
   display: swap;
 }
+
+@font-face {
+  font-family: "douyin";
+  src: url(../fonts/douyin/DouyinSansBold.woff2) format("woff2");
+  font-weight: 400;
+  style: normal;
+  display: swap;
+}

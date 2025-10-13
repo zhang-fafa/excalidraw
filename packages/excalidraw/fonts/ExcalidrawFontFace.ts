@@ -165,7 +165,7 @@ export class ExcalidrawFontFace {
 
     // fallback url for bundled fonts
     urls.push(new URL(assetUrl, ExcalidrawFontFace.ASSETS_FALLBACK_URL));
-
+    
     return urls;
   }
 

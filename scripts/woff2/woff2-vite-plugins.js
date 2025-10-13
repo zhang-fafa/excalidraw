@@ -60,6 +60,16 @@ module.exports.woff2BrowserPlugin = () => {
         font-weight: 700;
         style: normal;
         display: swap;
+      }
+      /* 添加 douyin 字体定义 */
+      @font-face {
+        font-family: "douyin";
+        src: url(${OSS_FONTS_CDN}fonts/douyin/DouyinSansBold.woff2)
+            format("woff2"),
+          url(./douyin/DouyinSansBold.woff2) format("woff2");
+        font-weight: bold;
+        style: normal;
+        display: swap;
       }`;
       }
 
