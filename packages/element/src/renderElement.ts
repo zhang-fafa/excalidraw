@@ -399,6 +399,86 @@ const drawImagePlaceholder = (
   );
 };
 
+// 文字水平渲染
+const renderHorizontalText = (
+  element: ExcalidrawTextElement,
+  context: CanvasRenderingContext2D
+)=>{
+  // Canvas does not support multiline text by default
+  const lines = element.text.replace(/\r\n?/g, "\n").split("\n");
+
+  const horizontalOffset =
+    element.textAlign === "center"
+      ? element.width / 2
+      : element.textAlign === "right"
+      ? element.width
+      : 0;
+
+  const lineHeightPx = getLineHeightInPx(
+    element.fontSize,
+    element.lineHeight,
+  );
+
+  const verticalOffset = getVerticalOffset(
+    element.fontFamily,
+    element.fontSize,
+    lineHeightPx,
+  );
+
+  for (let index = 0; index < lines.length; index++) {
+    context.fillText(
+      lines[index],
+      horizontalOffset,
+      index * lineHeightPx + verticalOffset,
+    );
+  }
+}
+
+// 竖排文字渲染函数
+const renderVerticalText = (
+  element: ExcalidrawTextElement,
+  context: CanvasRenderingContext2D
+) => {
+  const lines = element.text.replace(/\r\n?/g, "\n").split("\n");
+  const lineHeightPx = getLineHeightInPx(element.fontSize, element.lineHeight);
+  const verticalOffset = getVerticalOffset(
+    element.fontFamily,
+    element.fontSize,
+    lineHeightPx,
+  );
+  // 计算起始位置（从右到左排列）
+  const startX = element.textAlign === "center" 
+    ? element.width / 2 + (lines.length - 1) * lineHeightPx / 2
+    : element.textAlign === "left" 
+    ? element.width - lineHeightPx / 2
+    : lineHeightPx / 2;
+  lines.forEach((line, lineIndex) => {
+    const chars = Array.from(line); // 正确处理 Unicode 字符
+    const lineX = startX - lineIndex * lineHeightPx;
+    chars.forEach((char, charIndex) => {
+      context.save();
+      // 判断是否需要旋转（英文、数字等）
+      const shouldRotate = /[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(char);
+      
+      if (shouldRotate) {
+        // 英文字符旋转90度
+        const charY = charIndex * lineHeightPx + verticalOffset + lineHeightPx / 2;
+        context.translate(lineX, charY);
+        context.rotate(Math.PI / 2);
+        context.textAlign = "center" as CanvasTextAlign;
+        context.fillText(char, 0, 0);
+      } else {
+        // 中文字符保持正常方向
+        const charY = charIndex * lineHeightPx + verticalOffset;
+        context.textAlign = "center" as CanvasTextAlign;
+        context.fillText(char, lineX, charY);
+      }
+      
+      context.restore();
+    });
+  });
+};
+
 const drawElementOnCanvas = (
   element: NonDeletedExcalidrawElement,
   rc: RoughCanvas,
@@ -536,34 +616,13 @@ const drawElementOnCanvas = (
         context.fillStyle = element.strokeColor;
         context.textAlign = element.textAlign as CanvasTextAlign;
 
-        // Canvas does not support multiline text by default
-        const lines = element.text.replace(/\r\n?/g, "\n").split("\n");
-
-        const horizontalOffset =
-          element.textAlign === "center"
-            ? element.width / 2
-            : element.textAlign === "right"
-            ? element.width
-            : 0;
-
-        const lineHeightPx = getLineHeightInPx(
-          element.fontSize,
-          element.lineHeight,
-        );
-
-        const verticalOffset = getVerticalOffset(
-          element.fontFamily,
-          element.fontSize,
-          lineHeightPx,
-        );
-
-        for (let index = 0; index < lines.length; index++) {
-          context.fillText(
-            lines[index],
-            horizontalOffset,
-            index * lineHeightPx + verticalOffset,
-          );
+        // 添加竖排渲染支持
+        if (element.direction === "vertical") {
+          renderVerticalText(element, context);
+        } else {
+          renderHorizontalText(element, context);
         }
+
         context.restore();
         if (shouldTemporarilyAttach) {
           context.canvas.remove();

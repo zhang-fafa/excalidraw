@@ -2282,3 +2282,15 @@ export const elementLinkIcon = createIcon(
   </g>,
   tablerIconProps,
 );
+
+// 文字竖排图标
+export const VerticalTextIcon = createIcon(
+  <svg viewBox="0 0 24 24">
+    <path d="M9 4v12h2V4h-2zm4 0v12h2V4h-2zm-6 14v2h10v-2H7z" />
+  </svg>
+);
+export const HorizontalTextIcon = createIcon(
+  <svg viewBox="0 0 24 24">
+    <path d="M4 9v2h12V9H4zm0 4v2h12v-2H4zm14-6v10h2V7h-2z" />
+  </svg>
+);

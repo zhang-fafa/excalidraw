@@ -375,7 +375,12 @@ export const wrapText = (
   text: string,
   font: FontString,
   maxWidth: number,
+  textDirection: "horizontal" | "vertical" = "horizontal",
 ): string => {
+  if (textDirection === "vertical") {
+    return wrapVerticalText(text, font, maxWidth);
+  }
+
   // if maxWidth is not finite or NaN which can happen in case of bugs in
   // computation, we need to make sure we don't continue as we'll end up
   // in an infinite loop
@@ -400,6 +405,14 @@ export const wrapText = (
 
   return lines.join("\n");
 };
+
+const wrapVerticalText = (
+  text: string,
+  font: FontString,
+  maxHeight: number,
+):string => {
+  return text
+}
 
 /**
  * Wraps the original line into the lines based on the given width.
