@@ -118,6 +118,7 @@ export const FontPickerList = React.memo(
               });
             }
             if(metadata.description){
+              console.log('metadata.description', metadata.description)
               Object.assign(fontDescriptor, {
                 badge: {
                   type: DropDownMenuItemBadgeType.BLUE,

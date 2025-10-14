@@ -49,3 +49,19 @@
   style: normal;
   display: swap;
 }
+
+@font-face {
+  font-family: "wendao";
+  src: url(../fonts/More/wendaochao.woff2) format("woff2");
+  font-weight: 400;
+  style: normal;
+  display: swap;
+}
+
+@font-face {
+  font-family: "youshe bty";
+  src: url(../fonts/More/youshebiaotiyuan.woff2) format("woff2");
+  font-weight: 400;
+  style: normal;
+  display: swap;
+}

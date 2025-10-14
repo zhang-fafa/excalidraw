@@ -150,6 +150,24 @@ export const FONT_METADATA: Record<number, FontMetadata> = {
       lineHeight: 1.25,
     },
     description: "斗鱼追光体"
+  },
+  [FONT_FAMILY.wendao]:{
+    metrics: {
+      unitsPerEm: 2048,
+      ascender: 1021,
+      descender: -287,
+      lineHeight: 1.25,
+    },
+    description: "文道潮黑"
+  },
+  [FONT_FAMILY["youshe bty"]]:{
+    metrics: {
+      unitsPerEm: 2048,
+      ascender: 1021,
+      descender: -287,
+      lineHeight: 1.25,
+    },
+    description: "优设标题圆"
   }
 };
 

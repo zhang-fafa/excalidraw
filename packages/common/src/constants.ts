@@ -156,6 +156,8 @@ export const FONT_FAMILY = {
   Assistant: 10,
   douyin: 11,
   douyu: 12,
+  wendao: 13,
+  "youshe bty": 14
 };
 
 // Segoe UI Emoji fails to properly fallback for some glyphs: ∞, ∫, ≠

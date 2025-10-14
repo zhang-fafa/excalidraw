@@ -43,7 +43,9 @@ import { VirgilFontFaces } from "./Virgil";
 import { XiaolaiFontFaces } from "./Xiaolai";
 import { DouyinFontFaces } from "./douyin";
 import { 
-  DouyuFontFaces
+  DouyuFontFaces,
+  WendaoFontFaces,
+  YouSheBiaoTiYuanFontFaces
  } from "./More"
 
 export class Fonts {
@@ -396,6 +398,8 @@ export class Fonts {
     init("Virgil", ...VirgilFontFaces);
     init("douyin", ...DouyinFontFaces);
     init("douyu", ...DouyuFontFaces);
+    init("wendao", ...WendaoFontFaces);
+    init("youshe bty", ...YouSheBiaoTiYuanFontFaces);
 
     // fallback font faces
     init(CJK_HAND_DRAWN_FALLBACK_FONT, ...XiaolaiFontFaces);
