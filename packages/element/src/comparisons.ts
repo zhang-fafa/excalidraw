@@ -7,7 +7,8 @@ export const hasBackground = (type: ElementOrToolType) =>
   type === "ellipse" ||
   type === "diamond" ||
   type === "line" ||
-  type === "freedraw";
+  type === "freedraw" || 
+  type === "text";
 
 export const hasStrokeColor = (type: ElementOrToolType) =>
   type !== "image" && type !== "frame" && type !== "magicframe";
@@ -20,7 +21,8 @@ export const hasStrokeWidth = (type: ElementOrToolType) =>
   type === "diamond" ||
   type === "freedraw" ||
   type === "arrow" ||
-  type === "line";
+  type === "line" ||
+  type === "text";
 
 export const hasStrokeStyle = (type: ElementOrToolType) =>
   type === "rectangle" ||

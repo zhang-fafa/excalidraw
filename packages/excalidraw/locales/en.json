@@ -173,7 +173,8 @@
     "tab": "Tab",
     "shapeSwitch": "Switch shape",
     "roundness": "Roundness",
-    "roundnessPercentage": "Roundness: {{percentage}}%"
+    "roundnessPercentage": "Roundness: {{percentage}}%",
+    "textColor": "textColor"
   },
   "elementLink": {
     "title": "Link to object",

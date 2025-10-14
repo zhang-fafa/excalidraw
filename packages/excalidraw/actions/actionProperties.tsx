@@ -331,7 +331,8 @@ export const actionChangeStrokeColor = register({
         : CaptureUpdateAction.EVENTUALLY,
     };
   },
-  PanelComponent: ({ elements, appState, updateData, app }) => (
+  PanelComponent: ({ elements, appState, updateData, app }) => {
+    return (
     <>
       <h3 aria-hidden="true">{t("labels.stroke")}</h3>
       <ColorPicker
@@ -353,7 +354,7 @@ export const actionChangeStrokeColor = register({
         updateData={updateData}
       />
     </>
-  ),
+  )},
 });
 
 export const actionChangeBackgroundColor = register({
@@ -408,14 +409,19 @@ export const actionChangeBackgroundColor = register({
       captureUpdate: CaptureUpdateAction.IMMEDIATELY,
     };
   },
-  PanelComponent: ({ elements, appState, updateData, app }) => (
+  PanelComponent: ({ elements, appState, updateData, app }) => {
+    const activeEl = elements.filter(item=>{
+      return item.id === Object.keys(appState.selectedElementIds)[0]
+    })
+    const componentName = activeEl[0]?.type === 'text' ? t("labels.textColor") : t("labels.background");
+    return (
     <>
-      <h3 aria-hidden="true">{t("labels.background")}</h3>
+      <h3 aria-hidden="true">{componentName}</h3>
       <ColorPicker
         topPicks={DEFAULT_ELEMENT_BACKGROUND_PICKS}
         palette={DEFAULT_ELEMENT_BACKGROUND_COLOR_PALETTE}
         type="elementBackground"
-        label={t("labels.background")}
+        label={componentName}
         color={getFormValue(
           elements,
           app,
@@ -430,7 +436,7 @@ export const actionChangeBackgroundColor = register({
         updateData={updateData}
       />
     </>
-  ),
+  )},
 });
 
 export const actionChangeFillStyle = register({
@@ -522,7 +528,7 @@ export const actionChangeStrokeWidth = register({
       elements: changeProperty(elements, appState, (el) =>{
         return newElementWith(el, {
           strokeWidth: value,
-          strokeColor: value ? DEFAULT_ELEMENT_STROKE_COLOR_PALETTE.black : DEFAULT_ELEMENT_STROKE_COLOR_PALETTE.transparent,
+          // strokeColor: value ? DEFAULT_ELEMENT_STROKE_COLOR_PALETTE.black : DEFAULT_ELEMENT_STROKE_COLOR_PALETTE.transparent,
         });
       }),
       appState: { ...appState, currentItemStrokeWidth: value },
@@ -928,7 +934,7 @@ export const actionChangeFontSize = register({
                 marginLeft: '0px'
               }}
             >
-              <span>{displayValue}px</span>
+              <span>{ Math.floor(displayValue) }px</span>
             </button>
           </Popover.Trigger>
           {

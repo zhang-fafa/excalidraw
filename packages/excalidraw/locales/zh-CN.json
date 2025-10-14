@@ -140,7 +140,8 @@
     "textToDiagram": "文字至图表",
     "prompt": "Prompt",
     "roundness": "圆角",
-    "roundnessPercentage": "圆角: {{percentage}}%"
+    "roundnessPercentage": "圆角: {{percentage}}%",
+    "textColor": "字体颜色"
   },
   "library": {
     "noItems": "尚未添加任何项目……",

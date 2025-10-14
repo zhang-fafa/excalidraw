@@ -426,11 +426,15 @@ const renderHorizontalText = (
   );
 
   for (let index = 0; index < lines.length; index++) {
-    context.fillText(
-      lines[index],
-      horizontalOffset,
-      index * lineHeightPx + verticalOffset,
-    );
+    const x = horizontalOffset;
+    const y = index * lineHeightPx + verticalOffset;
+    if(element.strokeWidth && element.strokeWidth > 0){
+      // 先绘制描边
+      context.strokeText(lines[index], x, y);
+    }
+    
+    // 再绘制填充
+    context.fillText(lines[index], x, y);
   }
 }
 
@@ -613,8 +617,17 @@ const drawElementOnCanvas = (
         context.canvas.setAttribute("dir", rtl ? "rtl" : "ltr");
         context.save();
         context.font = getFontString(element);
-        context.fillStyle = element.strokeColor;
+        
         context.textAlign = element.textAlign as CanvasTextAlign;
+
+        if (element.strokeWidth && element.strokeWidth > 0) {
+          context.strokeStyle = element.strokeColor || '#000000';
+          context.lineWidth = element.strokeWidth;
+          context.lineJoin = 'round'; // 设置线条连接样式
+          context.miterLimit = 2;     // 设置斜接限制
+        }
+
+        context.fillStyle = element.backgroundColor || element.strokeColor;
 
         // 添加竖排渲染支持
         if (element.direction === "vertical") {
