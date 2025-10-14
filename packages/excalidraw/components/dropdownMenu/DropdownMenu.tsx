@@ -17,9 +17,11 @@ import "./DropdownMenu.scss";
 const DropdownMenu = ({
   children,
   open,
+  style,
 }: {
   children?: React.ReactNode;
   open: boolean;
+  style?: React.CSSProperties
 }) => {
   const MenuTriggerComp = getMenuTriggerComponent(children);
   const MenuContentComp = getMenuContentComponent(children);

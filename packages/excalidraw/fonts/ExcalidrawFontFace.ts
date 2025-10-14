@@ -13,10 +13,9 @@ export class ExcalidrawFontFace {
       ? `${import.meta.env.PKG_NAME}@${import.meta.env.PKG_VERSION}` // is provided during package build
       : "@excalidraw/excalidraw" // fallback to the latest package version (i.e. for app)
   }/dist/prod/`;
-
+  
   constructor(family: string, uri: string, descriptors?: FontFaceDescriptors) {
     this.urls = ExcalidrawFontFace.createUrls(uri);
-
     const sources = this.urls
       .map((url) => `url(${url}) ${ExcalidrawFontFace.getFormat(url)}`)
       .join(", ");
@@ -165,7 +164,6 @@ export class ExcalidrawFontFace {
 
     // fallback url for bundled fonts
     urls.push(new URL(assetUrl, ExcalidrawFontFace.ASSETS_FALLBACK_URL));
-    
     return urls;
   }
 

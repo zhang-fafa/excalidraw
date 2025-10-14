@@ -66,7 +66,7 @@ module.exports.woff2BrowserPlugin = () => {
         font-family: "douyin";
         src: url(${OSS_FONTS_CDN}fonts/douyin/DouyinSansBold.woff2)
             format("woff2"),
-          url(./douyin/DouyinSansBold.woff2) format("woff2");
+          url(./DouyinSansBold.woff2) format("woff2");
         font-weight: bold;
         style: normal;
         display: swap;

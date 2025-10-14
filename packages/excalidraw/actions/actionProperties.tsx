@@ -1,5 +1,6 @@
 import { pointFrom } from "@excalidraw/math";
 import { useEffect, useMemo, useRef, useState } from "react";
+import * as Popover from "@radix-ui/react-popover";
 
 import {
   DEFAULT_ELEMENT_BACKGROUND_COLOR_PALETTE,
@@ -86,6 +87,7 @@ import { IconPicker } from "../components/IconPicker";
 // ArrowHead icons
 import { Range } from "../components/Range";
 import { RoundnessRange } from "../components/RoundnessRange";
+
 import {
   ArrowheadArrowIcon,
   ArrowheadBarIcon,
@@ -138,6 +140,12 @@ import {
   getTargetElements,
   isSomeElementSelected,
 } from "../scene";
+
+import DropdownMenu from "../components/dropdownMenu/DropdownMenu";
+
+import { PropertiesPopover } from "../components/PropertiesPopover";
+
+import { useExcalidrawContainer } from "../components/App";
 
 import { register } from "./register";
 
@@ -700,7 +708,8 @@ export const actionChangeOpacity = register({
   ),
 });
 
-export const actionChangeFontSize = register({
+/** @deprecated Use actionChangeRoundnessSlider instead */
+export const actionChangeFontSize_old = register({
   name: "changeFontSize",
   label: "labels.fontSize",
   trackEvent: false,
@@ -728,7 +737,6 @@ export const actionChangeFontSize = register({
       
       return options;
     };
-    // 定义字体大小选项
     const fontSizeOptions = generateFontSizeOptions();
     const currentValue = getFormValue(
       elements,
@@ -757,31 +765,208 @@ export const actionChangeFontSize = register({
           ? null
           : appState.currentItemFontSize || DEFAULT_FONT_SIZE,
     );
+    const [openSelectFontSize, setOpenSelectFontSize] = useState<boolean>(false);
+    const displayValue = currentValue || DEFAULT_FONT_SIZE;
     return (
       <fieldset>
         <legend>{t("labels.fontSize")}</legend>
-        <div className="buttonList">
-          <select
+        <div className="buttonList" style={{position: 'relative'}}>
+          <button
             className="dropdown-select dropdown-select--floating"
-            value={currentValue || DEFAULT_FONT_SIZE}
-            onChange={(event) => {
-              const fontSize = parseInt(event.target.value, 10);
-              updateData(fontSize);
-            }}
+            onClick={() => setOpenSelectFontSize(!openSelectFontSize)}
             title={t("labels.fontSize")}
             aria-label={t("labels.fontSize")}
+            style={{ 
+              width: '100%',
+              textAlign: 'left',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              border: '1px solid var(--color-border)',
+              background: 'var(--color-surface-low)',
+              padding:'0 8px'
+            }}
           >
+            <span>{displayValue}px</span>
+            <span style={{ marginLeft: '8px', color: '#666', }}>{openSelectFontSize ? '▲' : '▼'}</span>
+          </button>
+          
+          <DropdownMenu 
+            open={openSelectFontSize}
+            style={{
+              width: "100%",
+            }}
+          >
+            <DropdownMenu.Content>
             {fontSizeOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+              <DropdownMenu.Item
+                onSelect={() => {
+                  updateData(option.value);
+                }}
+                data-testid="select-font-size"
+              >
+                { option.label }
+              </DropdownMenu.Item>
+              ))}
+            </DropdownMenu.Content>
+          </DropdownMenu>
         </div>
       </fieldset>
     );
   },
 });
+
+export const actionChangeFontSize = register({
+  name: "changeFontSize",
+  label: "labels.fontSize",
+  trackEvent: false,
+  perform: (elements, appState, value, app) => {
+    return changeFontSize(elements, appState, app, () => value, value);
+  },
+  PanelComponent: ({ elements, appState, updateData, app, data }) => {
+    const { container } = useExcalidrawContainer();
+    const currentValue = getFormValue(
+      elements,
+      app,
+      (element) => {
+        if (isTextElement(element)) {
+          return element.fontSize;
+        }
+        const boundTextElement = getBoundTextElement(
+          element,
+          app.scene.getNonDeletedElementsMap(),
+        );
+        if (boundTextElement) {
+          return boundTextElement.fontSize;
+        }
+        return null;
+      },
+      (element) =>
+        isTextElement(element) ||
+        getBoundTextElement(
+          element,
+          app.scene.getNonDeletedElementsMap(),
+        ) !== null,
+      (hasSelection) =>
+        hasSelection
+          ? null
+          : appState.currentItemFontSize || DEFAULT_FONT_SIZE,
+    );
+    const [openSelectFontSize, setOpenSelectFontSize] = useState<boolean>(false);
+    const displayValue = currentValue || DEFAULT_FONT_SIZE;
+    const generateFontSizeOptions = () => {
+      const options = [];
+      
+      // 小字号：8-24px，每2px递增
+      for (let size = 8; size <= 24; size += 2) {
+        options.push({ value: size, label: `${size}px` });
+      }
+      
+      // 中字号：28-72px，每4px递增
+      for (let size = 28; size <= 72; size += 4) {
+        options.push({ value: size, label: `${size}px` });
+      }
+      
+      // 大字号：80-200px，每8px递增
+      for (let size = 80; size <= 200; size += 8) {
+        options.push({ value: size, label: `${size}px` });
+      }
+      
+      return options;
+    };
+    const fontSizeOptions = generateFontSizeOptions();
+
+    const onClose = ()=>{
+      setOpenSelectFontSize(!openSelectFontSize)
+    }
+    return <fieldset>
+      <legend>{t("labels.fontSize")}</legend>
+      <div className="buttonList">
+        <RadioSelection
+          group="font-size"
+          options={[
+            {
+              value: 20,
+              text: t("labels.medium"),
+              icon: FontSizeMediumIcon,
+              testId: "fontSize-medium",
+            },
+            {
+              value: 28,
+              text: t("labels.large"),
+              icon: FontSizeLargeIcon,
+              testId: "fontSize-large",
+            },
+            {
+              value: 36,
+              text: t("labels.veryLarge"),
+              icon: FontSizeExtraLargeIcon,
+              testId: "fontSize-veryLarge",
+            },
+          ]}
+          value={displayValue}
+          onChange={(value) => {
+            updateData(value)
+          }}
+        />
+        <Popover.Root open={openSelectFontSize}>
+          <Popover.Trigger asChild>
+            <button
+              className="dropdown-select dropdown-select--floating"
+              onClick={() => setOpenSelectFontSize(!openSelectFontSize)}
+              title={t("labels.fontSize")}
+              aria-label={t("labels.fontSize")}
+              style={{ 
+                minWidth: '46px',
+                textAlign: 'center',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                border: '1px solid var(--color-border)',
+                background: 'var(--button-bg, var(--island-bg-color))',
+                padding:'0 8px',
+                marginLeft: '0px'
+              }}
+            >
+              <span>{displayValue}px</span>
+            </button>
+          </Popover.Trigger>
+          {
+            openSelectFontSize && (
+              <PropertiesPopover
+                className="properties-content"
+                container={container}
+                style={{ width: "6rem", height: "20rem", overflowY: 'auto' }}
+                onClose={onClose}
+              >
+                {
+                  fontSizeOptions.map(item=>{
+                    return <div 
+                      key={item.value} 
+                      style={{
+                        background: displayValue === item.value ? 'var(--button-selected-bg, var(--color-surface-primary-container))' : 'transparent',
+                        padding: '5px 10px',
+                        borderRadius: '8px',
+                      }}
+                      onClick={()=>{
+                        updateData(item.value);
+                        onClose()
+                      }}
+                      >
+                      { item.label }
+                    </div>
+                  })
+                }
+              </PropertiesPopover>
+            )
+          }
+        </Popover.Root>
+      </div>
+    </fieldset>
+  },
+});
+
+
 
 export const actionDecreaseFontSize = register({
   name: "decreaseFontSize",

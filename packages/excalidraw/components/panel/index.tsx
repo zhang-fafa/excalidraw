@@ -18,7 +18,6 @@ export const Panel = ({
   const selectedElementIds = actionManager.getAppState().selectedElementIds;
   // 监听元素选择
   const handleElementSelect = (element: NonDeletedExcalidrawElement, multiSelect: boolean):Promise<void> => {
-    console.log("元素选择", element);
     return new Promise((resolve) => {
       const currentAppState = actionManager.getAppState();
       const currentSelectedIds = currentAppState.selectedElementIds;
