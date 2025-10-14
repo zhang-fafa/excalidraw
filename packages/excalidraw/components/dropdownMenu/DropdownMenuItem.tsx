@@ -79,9 +79,11 @@ export const DropDownMenuItemBadgeType = {
 export const DropDownMenuItemBadge = ({
   type = DropDownMenuItemBadgeType.BLUE,
   children,
+  size
 }: {
   type?: ValueOf<typeof DropDownMenuItemBadgeType>;
   children: React.ReactNode;
+  size?: number;
 }) => {
   const { theme } = useExcalidrawAppState();
   const style = {
@@ -89,7 +91,7 @@ export const DropDownMenuItemBadge = ({
     marginLeft: "auto",
     padding: "2px 4px",
     borderRadius: 6,
-    fontSize: 9,
+    fontSize: size || 9,
     fontFamily: "Cascadia, monospace",
     border: theme === THEME.LIGHT ? "1.5px solid white" : "none",
   };

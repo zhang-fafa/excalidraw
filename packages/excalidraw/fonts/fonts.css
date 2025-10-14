@@ -41,3 +41,11 @@
   style: normal;
   display: swap;
 }
+
+@font-face {
+  font-family: "douyu";
+  src: url(../fonts/More/douyu.woff2) format("woff2");
+  font-weight: 400;
+  style: normal;
+  display: swap;
+}

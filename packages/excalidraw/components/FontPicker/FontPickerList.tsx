@@ -48,6 +48,7 @@ export interface FontDescriptor {
   badge?: {
     type: ValueOf<typeof DropDownMenuItemBadgeType>;
     placeholder: string;
+    size: number;
   };
 }
 
@@ -96,8 +97,7 @@ export const FontPickerList = React.memo(
     const [searchTerm, setSearchTerm] = useState("");
     const inputRef = useRef<HTMLInputElement>(null);
     const allFonts = useMemo(
-      () =>
-        Array.from(Fonts.registered.entries())
+      () => Array.from(Fonts.registered.entries())
           .filter(
             ([_, { metadata }]) => !metadata.private && !metadata.fallback,
           )
@@ -117,7 +117,15 @@ export const FontPickerList = React.memo(
                 },
               });
             }
-
+            if(metadata.description){
+              Object.assign(fontDescriptor, {
+                badge: {
+                  type: DropDownMenuItemBadgeType.BLUE,
+                  placeholder: metadata.description,
+                  size: 12
+                },
+              });
+            }
             return fontDescriptor as FontDescriptor;
           })
           .sort((a, b) =>
@@ -250,7 +258,7 @@ export const FontPickerList = React.memo(
       >
         {font.text}
         {font.badge && (
-          <DropDownMenuItemBadge type={font.badge.type}>
+          <DropDownMenuItemBadge type={font.badge.type} size={font.badge.size}>
             {font.badge.placeholder}
           </DropDownMenuItemBadge>
         )}

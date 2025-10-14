@@ -42,6 +42,9 @@ import { NunitoFontFaces } from "./Nunito";
 import { VirgilFontFaces } from "./Virgil";
 import { XiaolaiFontFaces } from "./Xiaolai";
 import { DouyinFontFaces } from "./douyin";
+import { 
+  DouyuFontFaces
+ } from "./More"
 
 export class Fonts {
   // it's ok to track fonts across multiple instances only once, so let's use
@@ -352,7 +355,6 @@ export class Fonts {
         ),
       });
     }
-
     return this.registered;
   }
 
@@ -393,6 +395,7 @@ export class Fonts {
     init("Nunito", ...NunitoFontFaces);
     init("Virgil", ...VirgilFontFaces);
     init("douyin", ...DouyinFontFaces);
+    init("douyu", ...DouyuFontFaces);
 
     // fallback font faces
     init(CJK_HAND_DRAWN_FALLBACK_FONT, ...XiaolaiFontFaces);

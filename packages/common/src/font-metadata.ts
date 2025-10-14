@@ -30,6 +30,8 @@ export interface FontMetadata {
   local?: true;
   /** flag to indicate a fallback font */
   fallback?: true;
+
+  description?: string;
 }
 
 export const FONT_METADATA: Record<number, FontMetadata> = {
@@ -131,6 +133,24 @@ export const FONT_METADATA: Record<number, FontMetadata> = {
     local: true,
     fallback: true,
   },
+  [FONT_FAMILY.douyin]:{
+    metrics: {
+      unitsPerEm: 2048,
+      ascender: 1021,
+      descender: -287,
+      lineHeight: 1.25,
+    },
+    description: "抖音美好体"
+  },
+  [FONT_FAMILY.douyu]:{
+    metrics: {
+      unitsPerEm: 2048,
+      ascender: 1021,
+      descender: -287,
+      lineHeight: 1.25,
+    },
+    description: "斗鱼追光体"
+  }
 };
 
 /** Unicode ranges defined by google fonts */

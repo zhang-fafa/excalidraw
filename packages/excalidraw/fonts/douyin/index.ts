@@ -4,6 +4,6 @@ import DouyinSansBold from "./DouyinSansBold.woff2";
 
 export const DouyinFontFaces: ExcalidrawFontFaceDescriptor[] = [
   {
-    uri: DouyinSansBold,
+    uri: DouyinSansBold
   },
 ];

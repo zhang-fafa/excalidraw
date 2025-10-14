@@ -155,6 +155,7 @@ export const FONT_FAMILY = {
   "Liberation Sans": 9,
   Assistant: 10,
   douyin: 11,
+  douyu: 12,
 };
 
 // Segoe UI Emoji fails to properly fallback for some glyphs: ∞, ∫, ≠

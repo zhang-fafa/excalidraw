@@ -19,7 +19,6 @@ export class ExcalidrawFontFace {
     const sources = this.urls
       .map((url) => `url(${url}) ${ExcalidrawFontFace.getFormat(url)}`)
       .join(", ");
-
     this.fontFace = new FontFace(family, sources, {
       display: "swap",
       style: "normal",
