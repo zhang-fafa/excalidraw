@@ -290,7 +290,6 @@ export const restoreElement = (
         lineHeight,
         letterSpacing: element.letterSpacing || DEFAULT_LETTER_SPACING,
       });
-
       // if empty text, mark as deleted. We keep in array
       // for data integrity purposes (collab etc.)
       if (opts?.deleteInvisibleElements && !text && !element.isDeleted) {

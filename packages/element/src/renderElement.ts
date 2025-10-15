@@ -268,7 +268,6 @@ const generateElementCanvas = (
   if (shouldResetImageFilter(element, renderConfig, appState)) {
     context.filter = IMAGE_INVERT_FILTER;
   }
-
   drawElementOnCanvas(element, rc, context, renderConfig, appState);
 
   context.restore();
@@ -467,19 +466,7 @@ const renderHorizontalText = (
   context: CanvasRenderingContext2D
 )=>{
   // Canvas does not support multiline text by default
-  let lines: string[];
-  const letterSpacing = element.letterSpacing;
-  if (letterSpacing > 0) {
-    //有字距时，需要重新计算换行
-    lines = rewrapTextWithLetterSpacing(
-      element.text,
-      context,
-      element.width,
-      letterSpacing
-    );
-  }else{
-    lines = element.text.replace(/\r\n?/g, "\n").split("\n");
-  }
+  const lines = element.text.replace(/\r\n?/g, "\n").split("\n");
   const horizontalOffset =
     element.textAlign === "center"
       ? element.width / 2
@@ -497,7 +484,8 @@ const renderHorizontalText = (
     element.fontSize,
     lineHeightPx,
   );
-
+  const letterSpacing = element.letterSpacing
+  
   for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
     const line = lines[lineIndex];
     const y = lineIndex * lineHeightPx + verticalOffset;
@@ -727,7 +715,7 @@ const drawElementOnCanvas = (
           context.lineJoin = 'round'; // 设置线条连接样式
           context.miterLimit = 2;     // 设置斜接限制
         }
-
+        
         context.fillStyle = element.backgroundColor || element.strokeColor;
 
         // 添加竖排渲染支持

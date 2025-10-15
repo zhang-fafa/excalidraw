@@ -7,13 +7,18 @@ import {
 
 import type { AppClassProperties } from "../types";
 
-export type RoundnessRangeProps = {
+export type RangeProps = {
   updateData: (value: number) => void;
   app: AppClassProperties;
   testId?: string;
 };
 
-export const RoundnessRange = ({ updateData, app, testId }: RoundnessRangeProps) => {
+function capitalize(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+// 圆角
+export const RoundnessRange = ({ updateData, app, testId }: RangeProps) => {
   const rangeRef = React.useRef<HTMLInputElement>(null);
   const valueRef = React.useRef<HTMLDivElement>(null);
   const selectedElements = app.scene.getSelectedElements(app.state);
@@ -96,3 +101,4 @@ export const RoundnessRange = ({ updateData, app, testId }: RoundnessRangeProps)
     </label>
   );
 };
+

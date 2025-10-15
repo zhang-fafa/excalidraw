@@ -71,6 +71,7 @@ export type ActionName =
   | "changeArrowType"
   | "changeOpacity"
   | "changeFontSize"
+  | "changeLetterSpacing"
   | "toggleCanvasMenu"
   | "toggleEditMenu"
   | "undo"

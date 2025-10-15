@@ -88,6 +88,8 @@ import { IconPicker } from "../components/IconPicker";
 import { Range } from "../components/Range";
 import { RoundnessRange } from "../components/RoundnessRange";
 
+import { GenericRange } from "../components/GenericRangeProps"
+
 import {
   ArrowheadArrowIcon,
   ArrowheadBarIcon,
@@ -714,6 +716,51 @@ export const actionChangeOpacity = register({
   ),
 });
 
+// 修改字距
+export const actionChangeLetterSpacing = register({
+  name: "changeLetterSpacing",
+  label: "labels.letterSpacing",
+  trackEvent: false,
+  perform: (elements, appState, value, app) => {
+    return {
+      elements: changeProperty(
+        elements,
+        appState,
+        (el) => {
+          if (isTextElement(el)) {
+            let newElement: ExcalidrawTextElement = newElementWith(el, {
+              letterSpacing: value,
+            });
+            return newElement;
+          }
+          return el;
+        },
+        true,
+      ),
+      appState: { ...appState, currentItemLetterSpacing: value },
+      captureUpdate: CaptureUpdateAction.IMMEDIATELY,
+    };
+  },
+  PanelComponent: ({ app, updateData }) => {
+    const defaultValue = 0;
+    return (
+      <GenericRange 
+        updateData={updateData}
+        app={app}
+        label="字距"
+        defaultValue={defaultValue}
+        elementKey={"letterSpacing" as keyof ExcalidrawElement}
+        elementFilter={(element: ExcalidrawElement) => element.type === "text"}
+        extractValue={(element, key) => {
+          const value = element[key as keyof ExcalidrawElement];
+          return typeof value === 'number' ? value : null;
+        }}
+        currentItemStateKey="currentItemLetterSpacing"
+      />
+    );
+  }
+})
+
 /** @deprecated Use actionChangeRoundnessSlider instead */
 export const actionChangeFontSize_old = register({
   name: "changeFontSize",
@@ -978,8 +1025,6 @@ export const actionChangeFontSize = register({
     </fieldset>
   },
 });
-
-
 
 export const actionDecreaseFontSize = register({
   name: "decreaseFontSize",

@@ -66,7 +66,6 @@ const _renderNewElementScene = ({
           frameClip(frame, context, renderConfig, appState);
         }
       }
-
       renderElement(
         newElement,
         elementsMap,
