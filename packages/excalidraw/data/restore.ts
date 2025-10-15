@@ -17,6 +17,7 @@ import {
   getSizeFromPoints,
   normalizeLink,
   getLineHeight,
+  DEFAULT_LETTER_SPACING,
 } from "@excalidraw/common";
 import { getNonDeletedElements, isValidPolygon } from "@excalidraw/element";
 import { normalizeFixedPoint } from "@excalidraw/element";
@@ -287,6 +288,7 @@ export const restoreElement = (
         originalText: element.originalText || text,
         autoResize: element.autoResize ?? true,
         lineHeight,
+        letterSpacing: element.letterSpacing || DEFAULT_LETTER_SPACING,
       });
 
       // if empty text, mark as deleted. We keep in array

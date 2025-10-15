@@ -915,7 +915,14 @@ export const actionChangeFontSize = register({
             updateData(value)
           }}
         />
-        <Popover.Root open={openSelectFontSize}>
+        <Popover.Root 
+          open={openSelectFontSize} 
+          onOpenChange={(isOpen: boolean)=>{
+            if(!isOpen){
+              onClose()
+            }
+          }}
+        >
           <Popover.Trigger asChild>
             <button
               className="dropdown-select dropdown-select--floating"
@@ -1335,6 +1342,7 @@ export const actionChangeFontFamily = register({
             });
           }}
           onPopupChange={(open) => {
+            console.log('open', open)
             if (open) {
               // open, populate the cache from scratch
               cachedElementsRef.current.clear();

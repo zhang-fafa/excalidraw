@@ -399,14 +399,87 @@ const drawImagePlaceholder = (
   );
 };
 
+
+// 计算带字距的行宽度
+function calculateLineWidthWithSpacing(
+  context: CanvasRenderingContext2D, 
+  chars: string[], 
+  letterSpacing: number
+): number {
+  let totalWidth = 0;
+  chars.forEach((char, index) => {
+    totalWidth += context.measureText(char).width;
+    if (index < chars.length - 1) {
+      totalWidth += letterSpacing;
+    }
+  });
+  return totalWidth;
+}
+
+// 考虑字距的文本重新换行
+const rewrapTextWithLetterSpacing = (
+  text: string,
+  context: CanvasRenderingContext2D,
+  maxWidth: number,
+  letterSpacing: number
+): string[] => {
+  const chars = Array.from(text.replace(/\r\n?/g, "\n"));
+  const lines: string[] = [];
+  let currentLine = "";
+  let currentWidth = 0;
+  
+  for (let i = 0; i < chars.length; i++) {
+    const char = chars[i];
+    
+    // 遇到原始换行符，强制换行
+    if (char === '\n') {
+      lines.push(currentLine);
+      currentLine = "";
+      currentWidth = 0;
+      continue;
+    }
+    
+    const charWidth = context.measureText(char).width;
+    // 计算添加当前字符后的总宽度（如果不是行首字符，需要加上字距）
+    const additionalWidth = charWidth + (currentLine.length > 0 ? letterSpacing : 0);
+    
+    // 检查是否超出最大宽度（但至少要保证每行有一个字符）
+    if (currentWidth + additionalWidth > maxWidth && currentLine.length > 0) {
+      lines.push(currentLine);
+      currentLine = char;
+      currentWidth = charWidth;
+    } else {
+      currentLine += char;
+      currentWidth += additionalWidth;
+    }
+  }
+  
+  // 添加最后一行
+  if (currentLine.length > 0) {
+    lines.push(currentLine);
+  }
+  
+  return lines.length > 0 ? lines : [''];
+};
 // 文字水平渲染
 const renderHorizontalText = (
   element: ExcalidrawTextElement,
   context: CanvasRenderingContext2D
 )=>{
   // Canvas does not support multiline text by default
-  const lines = element.text.replace(/\r\n?/g, "\n").split("\n");
-
+  let lines: string[];
+  const letterSpacing = element.letterSpacing;
+  if (letterSpacing > 0) {
+    //有字距时，需要重新计算换行
+    lines = rewrapTextWithLetterSpacing(
+      element.text,
+      context,
+      element.width,
+      letterSpacing
+    );
+  }else{
+    lines = element.text.replace(/\r\n?/g, "\n").split("\n");
+  }
   const horizontalOffset =
     element.textAlign === "center"
       ? element.width / 2
@@ -425,16 +498,44 @@ const renderHorizontalText = (
     lineHeightPx,
   );
 
-  for (let index = 0; index < lines.length; index++) {
-    const x = horizontalOffset;
-    const y = index * lineHeightPx + verticalOffset;
-    if(element.strokeWidth && element.strokeWidth > 0){
-      // 先绘制描边
-      context.strokeText(lines[index], x, y);
-    }
+  for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+    const line = lines[lineIndex];
+    const y = lineIndex * lineHeightPx + verticalOffset;
     
-    // 再绘制填充
-    context.fillText(lines[index], x, y);
+    if (letterSpacing === 0) {
+      if(element.strokeWidth && element.strokeWidth > 0){
+        // 先绘制描边
+        context.strokeText(lines[lineIndex], horizontalOffset, y);
+      }
+      // 再绘制填充
+      context.fillText(lines[lineIndex], horizontalOffset, y);
+    }else{
+      // 有字距时，逐个字符绘制
+      const chars = Array.from(line); // 正确处理Unicode字符
+      let currentX = horizontalOffset;
+      
+      // 如果是居中或右对齐，需要计算总宽度来调整起始位置
+      if (element.textAlign === "center" || element.textAlign === "right") {
+        const totalWidth = calculateLineWidthWithSpacing(context, chars, letterSpacing);
+        if (element.textAlign === "center") {
+          currentX = horizontalOffset - totalWidth / 2;
+        } else if (element.textAlign === "right") {
+          currentX = horizontalOffset - totalWidth;
+        }
+      }
+      
+      chars.forEach((char, charIndex) => {
+        // 绘制字符
+        if(element.strokeWidth && element.strokeWidth > 0){
+          context.strokeText(char, currentX, y);
+        }
+        context.fillText(char, currentX, y);
+        
+        // 计算下一个字符的位置
+        const charWidth = context.measureText(char).width;
+        currentX += charWidth + letterSpacing;
+      });
+    }
   }
 }
 

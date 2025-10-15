@@ -1162,11 +1162,11 @@ export const StrokeWidthZeroIcon = createIcon(
   <text
     x="10"
     y="13"
-    fontSize="14"
+    fontSize="12"
     fill="currentColor"
     textAnchor="middle"
   >
-    0
+    无
   </text>,
   modifiedTablerIconProps,
 );

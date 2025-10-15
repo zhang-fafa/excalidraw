@@ -1,4 +1,4 @@
-import { DEFAULT_FONT_FAMILY } from "@excalidraw/common";
+import { DEFAULT_FONT_FAMILY, DEFAULT_LETTER_SPACING } from "@excalidraw/common";
 
 import type { Radians } from "@excalidraw/math";
 
@@ -66,4 +66,5 @@ export const textFixture: ExcalidrawElement = {
   containerId: null,
   lineHeight: 1.25 as any,
   autoResize: false,
+  letterSpacing: DEFAULT_LETTER_SPACING,
 };

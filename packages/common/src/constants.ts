@@ -229,8 +229,10 @@ export const FRAME_STYLE = {
 
 export const MIN_FONT_SIZE = 1;
 export const DEFAULT_FONT_SIZE = 20;
+// 默认字距
+export const DEFAULT_LETTER_SPACING = 10;
 export const DEFAULT_FONT_FAMILY: FontFamilyValues = FONT_FAMILY.Excalifont;
-export const DEFAULT_TEXT_ALIGN = "left";
+export const DEFAULT_TEXT_ALIGN = "center";
 export const DEFAULT_VERTICAL_ALIGN = "top";
 export const DEFAULT_VERSION = "{version}";
 export const DEFAULT_TRANSFORM_HANDLE_SPACING = 2;

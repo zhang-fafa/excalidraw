@@ -18,7 +18,6 @@ export const measureText = (
   if (textDirection === "vertical") {
     return measureVerticalText(text, font, lineHeight);
   }
-
   const _text = text
     .split("\n")
     // replace empty lines with single space because leading/trailing empty
