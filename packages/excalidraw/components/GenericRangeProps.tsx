@@ -18,7 +18,7 @@ export type GenericRangeProps<T extends ExcalidrawElement> = {
   max?: number;
   step?: number;
   label: string;
-  defaultValue?: number;
+  defaultValue: number;
   // 值提取和转换函数
   extractValue?: (element: T, key: string) => number | null;
   // 元素过滤函数

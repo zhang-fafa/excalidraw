@@ -11,6 +11,7 @@ import {
   THEME,
   DEFAULT_GRID_STEP,
   isTestEnv,
+  DEFAULT_LETTER_SPACING,
 } from "@excalidraw/common";
 
 import type { AppState, NormalizedZoomValue } from "./types";
@@ -33,6 +34,7 @@ export const getDefaultAppState = (): Omit<
     currentItemFillStyle: DEFAULT_ELEMENT_PROPS.fillStyle,
     currentItemFontFamily: DEFAULT_FONT_FAMILY,
     currentItemFontSize: DEFAULT_FONT_SIZE,
+    currentItemLetterSpacing: DEFAULT_LETTER_SPACING,
     currentItemOpacity: DEFAULT_ELEMENT_PROPS.opacity,
     currentItemUrl: null,
     currentItemRoughness: DEFAULT_ELEMENT_PROPS.roughness,
@@ -152,6 +154,7 @@ const APP_STATE_STORAGE_CONF = (<
   currentItemFillStyle: { browser: true, export: false, server: false },
   currentItemFontFamily: { browser: true, export: false, server: false },
   currentItemFontSize: { browser: true, export: false, server: false },
+  currentItemLetterSpacing: { browser: true, export: false, server: false },
   currentItemRoundness: {
     browser: true,
     export: false,

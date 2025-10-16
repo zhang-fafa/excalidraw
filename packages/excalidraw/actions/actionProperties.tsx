@@ -22,6 +22,7 @@ import {
   getLineHeight,
   isTransparent,
   reduceToCommonValue,
+  DEFAULT_LETTER_SPACING,
 } from "@excalidraw/common";
 
 import { canBecomePolygon, getNonDeletedElements } from "@excalidraw/element";
@@ -530,7 +531,7 @@ export const actionChangeStrokeWidth = register({
       elements: changeProperty(elements, appState, (el) =>{
         return newElementWith(el, {
           strokeWidth: value,
-          // strokeColor: value ? DEFAULT_ELEMENT_STROKE_COLOR_PALETTE.black : DEFAULT_ELEMENT_STROKE_COLOR_PALETTE.transparent,
+          strokeColor: value ? (el.strokeColor || DEFAULT_ELEMENT_STROKE_COLOR_PALETTE.black) : DEFAULT_ELEMENT_STROKE_COLOR_PALETTE.transparent,
         });
       }),
       appState: { ...appState, currentItemStrokeWidth: value },
@@ -741,14 +742,40 @@ export const actionChangeLetterSpacing = register({
       captureUpdate: CaptureUpdateAction.IMMEDIATELY,
     };
   },
-  PanelComponent: ({ app, updateData }) => {
-    const defaultValue = 0;
+  PanelComponent: ({ elements, appState, app, updateData }) => {
+    const currentValue = getFormValue(
+      elements,
+      app,
+      (element) => {
+        if (isTextElement(element)) {
+          return element.fontSize;
+        }
+        const boundTextElement = getBoundTextElement(
+          element,
+          app.scene.getNonDeletedElementsMap(),
+        );
+        if (boundTextElement) {
+          return boundTextElement.fontSize;
+        }
+        return null;
+      },
+      (element) =>
+        isTextElement(element) ||
+        getBoundTextElement(
+          element,
+          app.scene.getNonDeletedElementsMap(),
+        ) !== null,
+      (hasSelection) =>
+        hasSelection
+          ? null
+          : appState.currentItemLetterSpacing || DEFAULT_LETTER_SPACING,
+    );
     return (
       <GenericRange 
         updateData={updateData}
         app={app}
         label="字距"
-        defaultValue={defaultValue}
+        defaultValue={currentValue || DEFAULT_LETTER_SPACING}
         elementKey={"letterSpacing" as keyof ExcalidrawElement}
         elementFilter={(element: ExcalidrawElement) => element.type === "text"}
         extractValue={(element, key) => {
@@ -1387,7 +1414,6 @@ export const actionChangeFontFamily = register({
             });
           }}
           onPopupChange={(open) => {
-            console.log('open', open)
             if (open) {
               // open, populate the cache from scratch
               cachedElementsRef.current.clear();

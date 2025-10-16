@@ -276,7 +276,8 @@ export const textWysiwyg = ({
         ),
         textAlign,
         verticalAlign,
-        color: updatedTextElement.strokeColor,
+        //描边色和背景色调换，因为官方是以描边色作为字体颜色，但我要文字有描边，所以把背景色作为字体颜色
+        color: updatedTextElement.backgroundColor,
         opacity: updatedTextElement.opacity / 100,
         filter: "var(--theme-filter)",
         maxHeight: `${editorMaxHeight}px`,
@@ -287,7 +288,7 @@ export const textWysiwyg = ({
       if (isTestEnv()) {
         editable.style.fontFamily = getFontFamilyString(updatedTextElement);
       }
-
+      console.log('editable.style',editable.style)
       app.scene.mutateElement(updatedTextElement, { x: coordX, y: coordY });
     }
   };

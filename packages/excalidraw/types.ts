@@ -332,6 +332,7 @@ export interface AppState {
   currentItemUrl: string | null;
   currentItemFontFamily: FontFamilyValues;
   currentItemFontSize: number;
+  currentItemLetterSpacing: number;
   currentItemTextAlign: TextAlign;
   currentItemStartArrowhead: Arrowhead | null;
   currentItemEndArrowhead: Arrowhead | null;

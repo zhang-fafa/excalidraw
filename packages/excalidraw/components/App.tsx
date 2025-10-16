@@ -4963,6 +4963,7 @@ class App extends React.Component<AppProps, AppState> {
       isExistingElement?: boolean;
     },
   ) {
+    
     const elementsMap = this.scene.getElementsMapIncludingDeleted();
 
     const updateElement = (nextOriginalText: string, isDeleted: boolean) => {
@@ -4986,7 +4987,7 @@ class App extends React.Component<AppProps, AppState> {
         }),
       ]);
     };
-
+    
     textWysiwyg({
       id: element.id,
       canvas: this.canvas,
@@ -5069,6 +5070,7 @@ class App extends React.Component<AppProps, AppState> {
       // if needed)
       autoSelect: !this.device.isTouchScreen,
     });
+    
     // deselect all other elements when inserting text
     this.deselectElements();
 
@@ -5345,6 +5347,14 @@ class App extends React.Component<AppProps, AppState> {
     const selectedElements = this.scene.getSelectedElements(this.state);
 
     if (selectedElements.length === 1) {
+      selectedElements[0] && this.actionManager.updater({
+        elements: this.actionManager.getElementsIncludingDeleted(),
+        appState:{
+          selectedElementIds: { [selectedElements[0].id]: true } as Record<string, true>
+        },
+        captureUpdate: CaptureUpdateAction.IMMEDIATELY
+      })
+
       if (isTextElement(selectedElements[0])) {
         existingTextElement = selectedElements[0];
       } else if (container) {
@@ -5409,8 +5419,8 @@ class App extends React.Component<AppProps, AppState> {
       newTextElement({
         x: parentCenterPosition ? parentCenterPosition.elementCenterX : sceneX,
         y: parentCenterPosition ? parentCenterPosition.elementCenterY : sceneY,
-        strokeColor: this.state.currentItemStrokeColor,
-        backgroundColor: this.state.currentItemBackgroundColor,
+        strokeColor: this.state.currentItemBackgroundColor,
+        backgroundColor: this.state.currentItemStrokeColor,
         fillStyle: this.state.currentItemFillStyle,
         strokeWidth: this.state.currentItemStrokeWidth,
         strokeStyle: this.state.currentItemStrokeStyle,

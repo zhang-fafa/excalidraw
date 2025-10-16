@@ -524,6 +524,8 @@ const renderHorizontalText = (
         currentX += charWidth + letterSpacing;
       });
     }
+
+    
   }
 }
 
@@ -570,6 +572,42 @@ const renderVerticalText = (
       context.restore();
     });
   });
+};
+
+// 边框渲染函数
+const renderTextBorder = (
+  element: ExcalidrawTextElement,
+  context: CanvasRenderingContext2D
+) => {
+  const borderWidth = 1;
+  const borderColor = "#000000";
+  let borderStyle = "dotted";
+  if (borderWidth > 0) {
+    context.save();
+    
+    context.strokeStyle = borderColor || '#cccccc';
+    context.lineWidth = borderWidth;
+    context.lineJoin = 'round';
+    context.lineCap = 'round';
+    
+    // 可选：设置虚线边框
+    if (borderStyle === 'dashed') {
+      context.setLineDash([5, 5]);
+    } else if (borderStyle === 'dotted') {
+      context.setLineDash([2, 2]);
+    }
+    
+    // 绘制边框，考虑边框宽度的偏移
+    const offset = borderWidth / 2;
+    context.strokeRect(
+      offset,
+      offset,
+      element.width - borderWidth,
+      element.height - borderWidth
+    );
+    
+    context.restore();
+  }
 };
 
 const drawElementOnCanvas = (
@@ -709,7 +747,7 @@ const drawElementOnCanvas = (
         
         context.textAlign = element.textAlign as CanvasTextAlign;
 
-        if (element.strokeWidth && element.strokeWidth > 0) {
+        if (element.strokeWidth > 0) {
           context.strokeStyle = element.strokeColor || '#000000';
           context.lineWidth = element.strokeWidth;
           context.lineJoin = 'round'; // 设置线条连接样式
@@ -717,6 +755,9 @@ const drawElementOnCanvas = (
         }
         
         context.fillStyle = element.backgroundColor || element.strokeColor;
+
+        // 渲染边框
+        renderTextBorder(element, context);
 
         // 添加竖排渲染支持
         if (element.direction === "vertical") {
@@ -934,7 +975,6 @@ export const renderElement = (
     renderConfig.pendingFlowchartNodes,
     reduceAlphaForSelection ? DEFAULT_REDUCED_GLOBAL_ALPHA : 1,
   );
-
   switch (element.type) {
     case "magicframe":
     case "frame": {
@@ -1216,7 +1256,7 @@ export const renderElement = (
       throw new Error(`Unimplemented type ${element.type}`);
     }
   }
-
+  
   context.globalAlpha = 1;
 };
 
