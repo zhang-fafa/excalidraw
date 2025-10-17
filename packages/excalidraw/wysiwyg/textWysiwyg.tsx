@@ -281,6 +281,8 @@ export const textWysiwyg = ({
         opacity: updatedTextElement.opacity / 100,
         filter: "var(--theme-filter)",
         maxHeight: `${editorMaxHeight}px`,
+        webkitTextStroke: `${updatedTextElement.strokeWidth / 2}px ${updatedTextElement.strokeColor}`,
+        letterSpacing: `${updatedTextElement.letterSpacing}px`,
       });
       editable.scrollTop = 0;
       // For some reason updating font attribute doesn't set font family
@@ -288,7 +290,6 @@ export const textWysiwyg = ({
       if (isTestEnv()) {
         editable.style.fontFamily = getFontFamilyString(updatedTextElement);
       }
-      console.log('editable.style',editable.style)
       app.scene.mutateElement(updatedTextElement, { x: coordX, y: coordY });
     }
   };
