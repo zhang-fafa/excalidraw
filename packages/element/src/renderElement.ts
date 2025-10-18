@@ -501,7 +501,7 @@ const renderHorizontalText = (
       // 有字距时，逐个字符绘制
       const chars = Array.from(line); // 正确处理Unicode字符
       let currentX = horizontalOffset;
-      console.log('currentX', currentX, element)
+      // console.log('currentX', currentX, element)
       // 如果是居中或右对齐，需要计算总宽度来调整起始位置
       if (element.textAlign === "center" || element.textAlign === "right") {
         const totalWidth = calculateLineWidthWithSpacing(context, chars, letterSpacing);
@@ -758,7 +758,7 @@ const drawElementOnCanvas = (
         context.fillStyle = element.backgroundColor || element.strokeColor;
 
         // 渲染边框
-        renderTextBorder(element, context);
+        // renderTextBorder(element, context);
 
         // 添加竖排渲染支持
         if (element.direction === "vertical") {

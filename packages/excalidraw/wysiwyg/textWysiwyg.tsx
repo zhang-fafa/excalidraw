@@ -293,8 +293,8 @@ export const textWysiwyg = ({
         filter: "var(--theme-filter)",
         maxHeight: `${editorMaxHeight}px`,
         webkitTextStroke: `${updatedTextElement.strokeWidth / 2}px ${updatedTextElement.strokeColor}`,
-        letterSpacing: `${updatedTextElement.letterSpacing}px`,
-        background: 'red',
+        // letterSpacing: `${updatedTextElement.letterSpacing}px`,
+        // background: 'red',
       });
       editable.scrollTop = 0;
 

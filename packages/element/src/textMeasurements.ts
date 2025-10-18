@@ -27,7 +27,6 @@ export const measureText = (
   const fontSize = parseFloat(font);
   const height = getTextHeight(_text, fontSize, lineHeight);
   const width = getTextWidth(_text, font, textElement.letterSpacing);
-  console.log('width', width, textElement.text, _text)
   return { width, height };
 };
 
@@ -198,7 +197,6 @@ export const getTextWidth = (text: string, font: FontString, letterSpacing: numb
   lines.forEach((line) => {
     width = Math.max(width, getLineWidth(line, font, letterSpacing));
   });
-  width += letterSpacing;
   return width;
 };
 
