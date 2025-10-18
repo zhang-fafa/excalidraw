@@ -513,19 +513,47 @@ const renderHorizontalText = (
       }
       
       chars.forEach((char, charIndex) => {
+        // 获取更精确的字符尺寸
+        const metrics = context.measureText(char);
+        const charWidth = metrics.width;
+        const charHeight = metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
+
+        // 边框配置
+        const borderConfig = {
+          padding: 0,
+          lineWidth: 1,
+          color: '#333333',
+          backgroundColor: 'transparent' // 可选背景色
+        };
+        // 计算边框位置
+        const borderX = currentX - borderConfig.padding;
+        const borderY = y - metrics.fontBoundingBoxAscent - borderConfig.padding;
+        const borderWidth = charWidth + borderConfig.padding * 2;
+        const borderHeight = charHeight + borderConfig.padding * 2;
+        
+        // context.save();
+
+        // 绘制边框方便查看单个字符的位置
+        // context.strokeStyle = borderConfig.color;
+        // context.lineWidth = borderConfig.lineWidth;
+        // context.strokeRect(borderX, borderY, borderWidth, borderHeight);
+
+        let charX;
+        if (element.textAlign === "center") {
+          charX = borderX + borderConfig.padding + borderWidth / 2 // 中心对齐
+        } else if (element.textAlign === "right") {
+          charX = borderX + borderWidth - borderConfig.padding; // 右对齐到边框右边缘
+        } else {
+          charX = borderX + borderConfig.padding; // 左对齐到边框左边缘
+        }
         // 绘制字符
         if(element.strokeWidth && element.strokeWidth > 0){
-          context.strokeText(char, currentX, y);
+          context.strokeText(char, charX, y);
         }
-        context.fillText(char, currentX, y);
-        
-        // 计算下一个字符的位置
-        const charWidth = context.measureText(char).width;
+        context.fillText(char, charX, y);
         currentX += charWidth + letterSpacing;
       });
     }
-
-    
   }
 }
 
