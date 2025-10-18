@@ -364,12 +364,13 @@ export const textWysiwyg = ({
           container,
           app.scene.getNonDeletedElementsMap(),
         );
+        const letterSpacing = boundTextElement?.letterSpacing || 0;
         const wrappedText = wrapText(
-          {originalText: `${editable.value}${text}`} as ExcalidrawTextElement,
+          {originalText: `${editable.value}${text}`, letterSpacing} as ExcalidrawTextElement,
           font,
           getBoundTextMaxWidth(container, boundTextElement),
         );
-        const width = getTextWidth(wrappedText, font);
+        const width = getTextWidth(wrappedText, font, letterSpacing);
         editable.style.width = `${width}px`;
       }
     };

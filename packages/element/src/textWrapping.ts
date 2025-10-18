@@ -394,7 +394,7 @@ export const wrapText = (
   const originalLines = text.split("\n");
 
   for (const originalLine of originalLines) {
-    const currentLineWidth = getLineWidth(originalLine, font);
+    const currentLineWidth = getLineWidth(originalLine, font, letterSpacing);
 
     if (currentLineWidth <= maxWidth) {
       lines.push(originalLine);
@@ -440,8 +440,8 @@ const wrapLine = (
 
     // cache single codepoint whitespace, CJK or emoji width calc. as kerning should not apply here
     const testLineWidth = isSingleCharacter(token)
-      ? currentLineWidth + charWidth.calculate(token, font)
-      : getLineWidth(testLine, font);
+      ? currentLineWidth + charWidth.calculate(token, font, letterSpacing) + letterSpacing
+      : getLineWidth(testLine, font, letterSpacing);
 
     // build up the current line, skipping length check for possibly trailing whitespaces
     if (/\s/.test(token) || testLineWidth <= maxWidth) {
@@ -461,7 +461,7 @@ const wrapLine = (
 
       // trailing line of the wrapped word might still be joined with next token/s
       currentLine = trailingLine;
-      currentLineWidth = getLineWidth(trailingLine, font);
+      currentLineWidth = getLineWidth(trailingLine, font, letterSpacing);
       iterator = tokenIterator.next();
     } else {
       // push & reset, but don't iterate on the next token, as we didn't use it yet!
@@ -475,7 +475,7 @@ const wrapLine = (
 
   // iterator done, push the trailing line if exists
   if (currentLine) {
-    const trailingLine = trimLine(currentLine, font, maxWidth);
+    const trailingLine = trimLine(currentLine, font, maxWidth, letterSpacing);
     lines.push(trailingLine);
   }
 
@@ -505,7 +505,7 @@ const wrapWord = (
   let currentLineWidth = 0;
 
   for (const char of chars) {
-    const _charWidth = charWidth.calculate(char, font) + letterSpacing;
+    const _charWidth = charWidth.calculate(char, font, letterSpacing) + letterSpacing;
     const testLineWidth = currentLineWidth + _charWidth;
 
     if (testLineWidth <= maxWidth) {
@@ -532,8 +532,8 @@ const wrapWord = (
 /**
  * Similarly to browsers, does not trim all trailing whitespaces, but only those exceeding the `maxWidth`.
  */
-const trimLine = (line: string, font: FontString, maxWidth: number) => {
-  const shouldTrimWhitespaces = getLineWidth(line, font) > maxWidth;
+const trimLine = (line: string, font: FontString, maxWidth: number, letterSpacing:number) => {
+  const shouldTrimWhitespaces = getLineWidth(line, font, letterSpacing) > maxWidth;
 
   if (!shouldTrimWhitespaces) {
     return line;
@@ -546,10 +546,10 @@ const trimLine = (line: string, font: FontString, maxWidth: number) => {
     "",
   ];
 
-  let trimmedLineWidth = getLineWidth(trimmedLine, font);
+  let trimmedLineWidth = getLineWidth(trimmedLine, font, letterSpacing);
 
   for (const whitespace of Array.from(whitespaces)) {
-    const _charWidth = charWidth.calculate(whitespace, font);
+    const _charWidth = charWidth.calculate(whitespace, font, letterSpacing) + letterSpacing;
     const testLineWidth = trimmedLineWidth + _charWidth;
 
     if (testLineWidth > maxWidth) {

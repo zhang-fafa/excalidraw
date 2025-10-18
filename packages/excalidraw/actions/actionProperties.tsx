@@ -742,6 +742,13 @@ export const actionChangeLetterSpacing = register({
               text: newText
             });
             
+            // 重新计算文本边界框，包括容器高度调整
+            redrawTextBoundingBox(
+              newElement,
+              app.scene.getContainerElement(el),
+              app.scene,
+            );
+            
             return newElement;
           }
           return el;

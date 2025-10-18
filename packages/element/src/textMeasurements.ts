@@ -26,7 +26,7 @@ export const measureText = (
     .join("\n");
   const fontSize = parseFloat(font);
   const height = getTextHeight(_text, fontSize, lineHeight);
-  const width = getTextWidth(_text, font);
+  const width = getTextWidth(_text, font, textElement.letterSpacing);
   console.log('width', width, textElement.text, _text)
   return { width, height };
 };
@@ -63,6 +63,7 @@ export const isMeasureTextSupported = () => {
       fontSize: DEFAULT_FONT_SIZE,
       fontFamily: DEFAULT_FONT_FAMILY,
     }),
+    0
   );
   return width > 0;
 };
@@ -175,19 +176,27 @@ class CanvasTextMetricsProvider implements TextMetricsProvider {
   }
 }
 
-export const getLineWidth = (text: string, font: FontString) => {
+export const getLineWidth = (text: string, font: FontString, letterSpacing: number) => {
   if (!textMetricsProvider) {
     textMetricsProvider = new CanvasTextMetricsProvider();
   }
 
-  return textMetricsProvider.getLineWidth(text, font);
+  const baseWidth = textMetricsProvider.getLineWidth(text, font);
+  
+  // 如果有letterSpacing，需要计算额外的间距
+  if (letterSpacing !== 0 && text.length > 0) {
+    const spacingWidth = letterSpacing * (text.length - 1);
+    return baseWidth + spacingWidth;
+  }
+  
+  return baseWidth;
 };
 
-export const getTextWidth = (text: string, font: FontString) => {
+export const getTextWidth = (text: string, font: FontString, letterSpacing: number) => {
   const lines = splitIntoLines(text);
   let width = 0;
   lines.forEach((line) => {
-    width = Math.max(width, getLineWidth(line, font));
+    width = Math.max(width, getLineWidth(line, font, letterSpacing));
   });
 
   return width;
@@ -205,16 +214,18 @@ export const getTextHeight = (
 export const charWidth = (() => {
   const cachedCharWidth: { [key: FontString]: Array<number> } = {};
 
-  const calculate = (char: string, font: FontString) => {
+  const calculate = (char: string, font: FontString, letterSpacing: number) => {
     const unicode = char.charCodeAt(0);
     if (!cachedCharWidth[font]) {
       cachedCharWidth[font] = [];
     }
     if (!cachedCharWidth[font][unicode]) {
-      const width = getLineWidth(char, font);
-      cachedCharWidth[font][unicode] = width;
+      // 缓存时不考虑letterSpacing，因为letterSpacing是动态的
+      const baseWidth = textMetricsProvider?.getLineWidth(char, font) || 0;
+      cachedCharWidth[font][unicode] = baseWidth;
     }
 
+    // 返回基础宽度，letterSpacing在调用处处理
     return cachedCharWidth[font][unicode];
   };
 
@@ -334,7 +345,7 @@ export const getMinVerticalTextElementWidth = (
 };
 
 // 添加计算竖排文字中需要旋转字符的高度调整
-export const getVerticalTextHeightWithRotation = (text: string, font: FontString) => {
+export const getVerticalTextHeightWithRotation = (text: string, font: FontString, letterSpacing: number) => {
   const lines = splitIntoLines(text);
   let maxHeight = 0;
   lines.forEach((line) => {
@@ -343,7 +354,7 @@ export const getVerticalTextHeightWithRotation = (text: string, font: FontString
     chars.forEach((char) => {
       if (/[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(char)) {
         // 旋转的字符需要更多垂直空间
-        lineHeight += getLineWidth(char, font); // 旋转后宽度变成高度
+        lineHeight += getLineWidth(char, font, letterSpacing); // 旋转后宽度变成高度
       } else {
         // 正常字符
         lineHeight += getVerticalCharHeight(font);
