@@ -198,7 +198,7 @@ export const getTextWidth = (text: string, font: FontString, letterSpacing: numb
   lines.forEach((line) => {
     width = Math.max(width, getLineWidth(line, font, letterSpacing));
   });
-
+  width += letterSpacing;
   return width;
 };
 
