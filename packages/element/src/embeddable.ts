@@ -14,6 +14,7 @@ import { isIframeElement } from "./typeChecks";
 
 import type {
   ExcalidrawElement,
+  ExcalidrawTextElement,
   ExcalidrawIframeLikeElement,
   IframeData,
 } from "./types";
@@ -352,7 +353,7 @@ export const createPlaceholderEmbeddableLabel = (
     backgroundColor: "transparent",
     fontFamily,
     fontSize,
-    text: wrapText(text, fontString, element.width - 20),
+    text: wrapText({originalText: text} as ExcalidrawTextElement, fontString, element.width - 20),
     textAlign: "center",
     verticalAlign: VERTICAL_ALIGN.MIDDLE,
     angle: element.angle ?? 0,

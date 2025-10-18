@@ -60,6 +60,7 @@ import type {
   ConvertibleTypes,
   ExcalidrawDiamondElement,
   ExcalidrawElement,
+  ExcalidrawTextElement,
   ExcalidrawEllipseElement,
   ExcalidrawLinearElement,
   ExcalidrawRectangleElement,
@@ -371,13 +372,13 @@ export const adjustBoundTextSize = (
   const maxHeight = getBoundTextMaxHeight(container, boundText);
 
   const wrappedText = wrapText(
-    boundText.text,
+    {originalText: boundText.text} as ExcalidrawTextElement,
     getFontString(boundText),
     maxWidth,
   );
 
   let metrics = measureText(
-    wrappedText,
+    {text: wrappedText, letterSpacing: boundText.letterSpacing} as ExcalidrawTextElement,
     getFontString(boundText),
     boundText.lineHeight,
   );
@@ -393,7 +394,7 @@ export const adjustBoundTextSize = (
       fontSize: nextFontSize,
     };
     metrics = measureText(
-      boundText.text,
+      {text: boundText.text, letterSpacing: boundText.letterSpacing} as ExcalidrawTextElement,
       getFontString(_updatedTextElement),
       boundText.lineHeight,
     );

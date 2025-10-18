@@ -12,6 +12,7 @@ import { getSelectedElements } from "../scene";
 import { register } from "./register";
 
 import type { AppClassProperties } from "../types";
+import { ExcalidrawTextElement } from "@excalidraw/element/types";
 
 export const actionTextAutoResize = register({
   name: "autoResize",
@@ -34,7 +35,7 @@ export const actionTextAutoResize = register({
       elements: elements.map((element) => {
         if (element.id === selectedElements[0].id && isTextElement(element)) {
           const metrics = measureText(
-            element.originalText,
+            {text: element.originalText, letterSpacing: element.letterSpacing} as ExcalidrawTextElement,
             getFontString(element),
             element.lineHeight,
           );

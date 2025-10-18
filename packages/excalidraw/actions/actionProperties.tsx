@@ -23,6 +23,7 @@ import {
   isTransparent,
   reduceToCommonValue,
   DEFAULT_LETTER_SPACING,
+  getFontString
 } from "@excalidraw/common";
 
 import { canBecomePolygon, getNonDeletedElements } from "@excalidraw/element";
@@ -50,6 +51,7 @@ import {
   isLineElement,
   isTextElement,
   isUsingAdaptiveRadius,
+  wrapText,
 } from "@excalidraw/element";
 
 import { hasStrokeColor } from "@excalidraw/element";
@@ -153,6 +155,7 @@ import { useExcalidrawContainer } from "../components/App";
 import { register } from "./register";
 
 import type { AppClassProperties, AppState, Primitive } from "../types";
+
 
 const FONT_SIZE_RELATIVE_INCREASE_STEP = 0.1;
 
@@ -729,9 +732,16 @@ export const actionChangeLetterSpacing = register({
         appState,
         (el) => {
           if (isTextElement(el)) {
+            //从新计算换行
+            const newText = wrapText({
+              originalText: el.originalText,
+              letterSpacing: value
+            } as ExcalidrawTextElement, getFontString(el), el.width)
             let newElement: ExcalidrawTextElement = newElementWith(el, {
               letterSpacing: value,
+              text: newText
             });
+            
             return newElement;
           }
           return el;

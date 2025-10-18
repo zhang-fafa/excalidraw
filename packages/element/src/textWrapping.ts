@@ -2,7 +2,7 @@ import { isDevEnv, isTestEnv } from "@excalidraw/common";
 
 import { charWidth, getLineWidth } from "./textMeasurements";
 
-import type { FontString } from "./types";
+import type { FontString, ExcalidrawTextElement } from "./types";
 
 let cachedCjkRegex: RegExp | undefined;
 let cachedLineBreakRegex: RegExp | undefined;
@@ -372,11 +372,13 @@ export const parseTokens = (line: string) => {
  * Wraps the original text into the lines based on the given width.
  */
 export const wrapText = (
-  text: string,
+  textElement: ExcalidrawTextElement,
   font: FontString,
   maxWidth: number,
   textDirection: "horizontal" | "vertical" = "horizontal",
 ): string => {
+  const text = textElement.originalText
+  const letterSpacing = textElement.letterSpacing || 0
   if (textDirection === "vertical") {
     return wrapVerticalText(text, font, maxWidth);
   }
@@ -399,7 +401,7 @@ export const wrapText = (
       continue;
     }
 
-    const wrappedLine = wrapLine(originalLine, font, maxWidth);
+    const wrappedLine = wrapLine(originalLine, font, maxWidth, letterSpacing);
     lines.push(...wrappedLine);
   }
 
@@ -421,6 +423,7 @@ const wrapLine = (
   line: string,
   font: FontString,
   maxWidth: number,
+  letterSpacing: number,
 ): string[] => {
   const lines: Array<string> = [];
   const tokens = parseTokens(line);
@@ -450,7 +453,7 @@ const wrapLine = (
 
     // current line is empty => just the token (word) is longer than `maxWidth` and needs to be wrapped
     if (!currentLine) {
-      const wrappedWord = wrapWord(token, font, maxWidth);
+      const wrappedWord = wrapWord(token, font, maxWidth, letterSpacing);
       const trailingLine = wrappedWord[wrappedWord.length - 1] ?? "";
       const precedingLines = wrappedWord.slice(0, -1);
 
@@ -486,6 +489,7 @@ const wrapWord = (
   word: string,
   font: FontString,
   maxWidth: number,
+  letterSpacing: number,
 ): Array<string> => {
   // multi-codepoint emojis are already broken apart and shouldn't be broken further
   if (getEmojiRegex().test(word)) {
@@ -501,7 +505,7 @@ const wrapWord = (
   let currentLineWidth = 0;
 
   for (const char of chars) {
-    const _charWidth = charWidth.calculate(char, font);
+    const _charWidth = charWidth.calculate(char, font) + letterSpacing;
     const testLineWidth = currentLineWidth + _charWidth;
 
     if (testLineWidth <= maxWidth) {

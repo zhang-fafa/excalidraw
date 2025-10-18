@@ -3,6 +3,7 @@ import {
   KEYS,
   CLASSES,
   POINTER_BUTTON,
+  BOUND_TEXT_PADDING,
   isWritableElement,
   getFontString,
   getFontFamilyString,
@@ -133,10 +134,11 @@ export const textWysiwyg = ({
   const updateWysiwygStyle = () => {
     const appState = app.state;
     const updatedTextElement = app.scene.getElement<ExcalidrawTextElement>(id);
-
+    
     if (!updatedTextElement) {
       return;
     }
+
     const { textAlign, verticalAlign } = updatedTextElement;
     const elementsMap = app.scene.getNonDeletedElementsMap();
     if (updatedTextElement && isTextElement(updatedTextElement)) {
@@ -243,18 +245,19 @@ export const textWysiwyg = ({
         editable.selectionEnd = editable.value.length - diff;
       }
 
-      if (!container) {
-        maxWidth = (appState.width - 8 - viewportX) / appState.zoom.value;
-        width = Math.min(width, maxWidth);
-      } else {
-        width += 0.5;
-      }
-
       // add 5% buffer otherwise it causes wysiwyg to jump
       height *= 1.05;
 
       const font = getFontString(updatedTextElement);
 
+      if (!container) {
+        maxWidth = (appState.width - 8 - viewportX) / appState.zoom.value;
+        width = Math.min(width, maxWidth);
+      } else {
+        width += 0.5
+      }
+
+      // console.log('width1111', width, editable.value, updatedTextElement)
       // Make sure text editor height doesn't go beyond viewport
       const editorMaxHeight =
         (appState.height - viewportY) / appState.zoom.value;
@@ -283,8 +286,10 @@ export const textWysiwyg = ({
         maxHeight: `${editorMaxHeight}px`,
         webkitTextStroke: `${updatedTextElement.strokeWidth / 2}px ${updatedTextElement.strokeColor}`,
         letterSpacing: `${updatedTextElement.letterSpacing}px`,
+        background: 'red',
       });
       editable.scrollTop = 0;
+
       // For some reason updating font attribute doesn't set font family
       // hence updating font family explicitly for test environment
       if (isTestEnv()) {
@@ -360,7 +365,7 @@ export const textWysiwyg = ({
           app.scene.getNonDeletedElementsMap(),
         );
         const wrappedText = wrapText(
-          `${editable.value}${text}`,
+          {originalText: `${editable.value}${text}`} as ExcalidrawTextElement,
           font,
           getBoundTextMaxWidth(container, boundTextElement),
         );

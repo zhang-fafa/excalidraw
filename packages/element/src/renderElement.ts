@@ -268,7 +268,7 @@ const generateElementCanvas = (
   if (shouldResetImageFilter(element, renderConfig, appState)) {
     context.filter = IMAGE_INVERT_FILTER;
   }
-  drawElementOnCanvas(element, rc, context, renderConfig, appState);
+  drawElementOnCanvas(element, rc, context, renderConfig, appState, elementsMap);
 
   context.restore();
 
@@ -463,7 +463,7 @@ const rewrapTextWithLetterSpacing = (
 // 文字水平渲染
 const renderHorizontalText = (
   element: ExcalidrawTextElement,
-  context: CanvasRenderingContext2D
+  context: CanvasRenderingContext2D,
 )=>{
   // Canvas does not support multiline text by default
   const lines = element.text.replace(/\r\n?/g, "\n").split("\n");
@@ -501,7 +501,7 @@ const renderHorizontalText = (
       // 有字距时，逐个字符绘制
       const chars = Array.from(line); // 正确处理Unicode字符
       let currentX = horizontalOffset;
-      
+      console.log('currentX', currentX, element)
       // 如果是居中或右对齐，需要计算总宽度来调整起始位置
       if (element.textAlign === "center" || element.textAlign === "right") {
         const totalWidth = calculateLineWidthWithSpacing(context, chars, letterSpacing);
@@ -532,7 +532,7 @@ const renderHorizontalText = (
 // 竖排文字渲染函数
 const renderVerticalText = (
   element: ExcalidrawTextElement,
-  context: CanvasRenderingContext2D
+  context: CanvasRenderingContext2D,
 ) => {
   const lines = element.text.replace(/\r\n?/g, "\n").split("\n");
   const lineHeightPx = getLineHeightInPx(element.fontSize, element.lineHeight);
@@ -616,6 +616,7 @@ const drawElementOnCanvas = (
   context: CanvasRenderingContext2D,
   renderConfig: StaticCanvasRenderConfig,
   appState: StaticCanvasAppState,
+  elementsMap: NonDeletedSceneElementsMap,
 ) => {
   switch (element.type) {
     case "rectangle":
@@ -1030,7 +1031,7 @@ export const renderElement = (
         context.translate(cx, cy);
         context.rotate(element.angle);
         context.translate(-shiftX, -shiftY);
-        drawElementOnCanvas(element, rc, context, renderConfig, appState);
+        drawElementOnCanvas(element, rc, context, renderConfig, appState, allElementsMap);
         context.restore();
       } else {
         const elementWithCanvas = generateElementWithCanvas(
@@ -1129,6 +1130,7 @@ export const renderElement = (
             tempCanvasContext,
             renderConfig,
             appState,
+            allElementsMap
           );
 
           tempCanvasContext.translate(shiftX, shiftY);
@@ -1168,7 +1170,7 @@ export const renderElement = (
           }
 
           context.translate(-shiftX, -shiftY);
-          drawElementOnCanvas(element, rc, context, renderConfig, appState);
+          drawElementOnCanvas(element, rc, context, renderConfig, appState, allElementsMap);
         }
 
         context.restore();

@@ -10,15 +10,15 @@ import {
 import type { FontString, ExcalidrawTextElement } from "./types";
 
 export const measureText = (
-  text: string,
+  textElement: ExcalidrawTextElement,
   font: FontString,
   lineHeight: ExcalidrawTextElement["lineHeight"],
   textDirection: "horizontal" | "vertical" = "horizontal",
 ) => {
   if (textDirection === "vertical") {
-    return measureVerticalText(text, font, lineHeight);
+    return measureVerticalText(textElement.text, font, lineHeight);
   }
-  const _text = text
+  const _text = textElement.text
     .split("\n")
     // replace empty lines with single space because leading/trailing empty
     // lines would be stripped from computation
@@ -27,6 +27,7 @@ export const measureText = (
   const fontSize = parseFloat(font);
   const height = getTextHeight(_text, fontSize, lineHeight);
   const width = getTextWidth(_text, font);
+  console.log('width', width, textElement.text, _text)
   return { width, height };
 };
 
@@ -36,11 +37,12 @@ const DUMMY_TEXT = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toLocaleUpperCase();
 export const getApproxMinLineWidth = (
   font: FontString,
   lineHeight: ExcalidrawTextElement["lineHeight"],
+  letterSpacing: ExcalidrawTextElement["letterSpacing"] = 0,
 ) => {
   const maxCharWidth = getMaxCharWidth(font);
   if (maxCharWidth === 0) {
     return (
-      measureText(DUMMY_TEXT.split("").join("\n"), font, lineHeight).width +
+      measureText({text: DUMMY_TEXT.split("").join("\n"), letterSpacing} as ExcalidrawTextElement, font, lineHeight).width +
       BOUND_TEXT_PADDING * 2
     );
   }
@@ -51,7 +53,7 @@ export const getMinTextElementWidth = (
   font: FontString,
   lineHeight: ExcalidrawTextElement["lineHeight"],
 ) => {
-  return measureText("", font, lineHeight).width + BOUND_TEXT_PADDING * 2;
+  return measureText({text: ""} as ExcalidrawTextElement, font, lineHeight).width + BOUND_TEXT_PADDING * 2;
 };
 
 export const isMeasureTextSupported = () => {

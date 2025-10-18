@@ -3233,7 +3233,6 @@ class App extends React.Component<AppProps, AppState> {
       }
       return;
     }
-
     // ------------------- Text -------------------
     this.addTextFromPaste(data.text, isPlainPaste);
   }
@@ -3540,15 +3539,15 @@ class App extends React.Component<AppProps, AppState> {
             y: currentY,
           });
 
-          let metrics = measureText(originalText, fontString, lineHeight);
+          let metrics = measureText({text: originalText, letterSpacing: this.state.currentItemLetterSpacing} as ExcalidrawTextElement, fontString, lineHeight);
           const isTextUnwrapped = metrics.width > maxTextWidth;
 
           const text = isTextUnwrapped
-            ? wrapText(originalText, fontString, maxTextWidth)
+            ? wrapText({originalText} as ExcalidrawTextElement, fontString, maxTextWidth)
             : originalText;
 
           metrics = isTextUnwrapped
-            ? measureText(text, fontString, lineHeight)
+            ? measureText({text, letterSpacing: this.state.currentItemLetterSpacing} as ExcalidrawTextElement, fontString, lineHeight)
             : metrics;
 
           const startX = x - metrics.width / 2;
@@ -5007,6 +5006,7 @@ class App extends React.Component<AppProps, AppState> {
       onChange: withBatchedUpdates((nextOriginalText) => {
         updateElement(nextOriginalText, false);
         if (isNonDeletedElement(element)) {
+          console.log('element', element)
           updateBoundElements(element, this.scene);
         }
       }),
@@ -5389,6 +5389,7 @@ class App extends React.Component<AppProps, AppState> {
       const minWidth = getApproxMinLineWidth(
         getFontString(fontString),
         lineHeight,
+        0
       );
       const minHeight = getApproxMinLineHeight(fontSize, lineHeight);
       const newHeight = Math.max(container.height, minHeight);

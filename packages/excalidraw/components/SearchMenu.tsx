@@ -690,7 +690,7 @@ const getMatchedLines = (
       remainingQuery = remainingQuery.slice(matchCapacity);
 
       const offset = measureText(
-        textToStart,
+        {text: textToStart, letterSpacing: textElement.letterSpacing} as ExcalidrawTextElement,
         getFontString(textElement),
         textElement.lineHeight,
       );
@@ -703,7 +703,7 @@ const getMatchedLines = (
 
       if (textElement.textAlign !== "left" && lineIndexRange.line.length > 0) {
         const lineLength = measureText(
-          lineIndexRange.line,
+          {text: lineIndexRange.line, letterSpacing: textElement.letterSpacing} as ExcalidrawTextElement,
           getFontString(textElement),
           textElement.lineHeight,
         );
@@ -716,7 +716,7 @@ const getMatchedLines = (
       }
 
       const { width, height } = measureText(
-        matchedWord,
+        {text: matchedWord, letterSpacing: textElement.letterSpacing} as ExcalidrawTextElement,
         getFontString(textElement),
         textElement.lineHeight,
       );
@@ -756,14 +756,14 @@ const getMatchInFrame = (
 
   const lineHeight = getLineHeight(FONT_FAMILY.Assistant);
 
-  const offset = measureText(prefixText, font, lineHeight);
+  const offset = measureText({text: prefixText, letterSpacing: 0} as ExcalidrawTextElement, font, lineHeight);
 
   // Correct non-zero width for empty string
   if (prefixText === "") {
     offset.width = 0;
   }
 
-  const matchedMetrics = measureText(matchedText, font, lineHeight);
+  const matchedMetrics = measureText({text: matchedText, letterSpacing: 0} as ExcalidrawTextElement, font, lineHeight);
 
   const offsetX = offset.width;
   const offsetY = -offset.height - FRAME_STYLE.strokeWidth;

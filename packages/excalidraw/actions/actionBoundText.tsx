@@ -66,7 +66,7 @@ export const actionUnbindText = register({
       const boundTextElement = getBoundTextElement(element, elementsMap);
       if (boundTextElement) {
         const { width, height } = measureText(
-          boundTextElement.originalText,
+          {text: boundTextElement.originalText, letterSpacing: boundTextElement.letterSpacing} as ExcalidrawTextElement,
           getFontString(boundTextElement),
           boundTextElement.lineHeight,
         );

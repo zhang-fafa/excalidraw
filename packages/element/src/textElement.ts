@@ -79,14 +79,14 @@ export const redrawTextBoundingBox = (
       ? getBoundTextMaxWidth(container, textElement)
       : textElement.width;
     boundTextUpdates.text = wrapText(
-      textElement.originalText,
+      textElement,
       getFontString(textElement),
-      maxWidth,
+      maxWidth
     );
   }
 
   const metrics = measureText(
-    boundTextUpdates.text,
+    textElement,
     getFontString(textElement),
     textElement.lineHeight,
     textElement.direction || "horizontal",
@@ -170,13 +170,13 @@ export const handleBindTextResize = (
     ) {
       if (text) {
         text = wrapText(
-          textElement.originalText,
+          textElement,
           getFontString(textElement),
           maxWidth,
         );
       }
       const metrics = measureText(
-        text,
+        textElement,
         getFontString(textElement),
         textElement.lineHeight,
       );

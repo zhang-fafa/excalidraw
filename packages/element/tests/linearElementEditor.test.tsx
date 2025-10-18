@@ -39,6 +39,7 @@ import {
 
 import type {
   ExcalidrawElement,
+  ExcalidrawTextElement,
   ExcalidrawLinearElement,
   ExcalidrawTextElementWithContainer,
   FontString,
@@ -966,7 +967,7 @@ describe("Test Linear Elements", () => {
         type: "text",
         x: 0,
         y: 0,
-        text: wrapText(text, font, getBoundTextMaxWidth(container, null)),
+        text: wrapText({originalText: text} as ExcalidrawTextElement, font, getBoundTextMaxWidth(container, null)),
         containerId: container.id,
         width: 30,
         height: 20,
@@ -1321,7 +1322,7 @@ describe("Test Linear Elements", () => {
       expect(rect.y).toBe(0);
       expect(
         wrapText(
-          textElement.originalText,
+          textElement,
           font,
           getBoundTextMaxWidth(arrow, null),
         ),
@@ -1346,7 +1347,7 @@ describe("Test Linear Elements", () => {
       );
       expect(
         wrapText(
-          textElement.originalText,
+          textElement,
           font,
           getBoundTextMaxWidth(arrow, null),
         ),

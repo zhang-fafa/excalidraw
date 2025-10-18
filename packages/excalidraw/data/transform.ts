@@ -580,9 +580,10 @@ export const convertToExcalidrawElements = (
         const fontSize = element?.fontSize || DEFAULT_FONT_SIZE;
         const lineHeight = element?.lineHeight || getLineHeight(fontFamily);
         const text = element.text ?? "";
+        const letterSpacing = element?.letterSpacing || 0;
         const normalizedText = normalizeText(text);
         const metrics = measureText(
-          normalizedText,
+          {text: normalizedText, letterSpacing} as ExcalidrawTextElement,
           getFontString({ fontFamily, fontSize }),
           lineHeight,
         );

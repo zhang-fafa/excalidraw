@@ -1,6 +1,6 @@
 import { wrapText, parseTokens } from "../src/textWrapping";
 
-import type { FontString } from "../src/types";
+import type { FontString, ExcalidrawTextElement } from "../src/types";
 
 describe("Test wrapText", () => {
   // font is irrelevant as jsdom does not support FontFace API
@@ -11,94 +11,94 @@ describe("Test wrapText", () => {
   it("should wrap the text correctly when word length is exactly equal to max width", () => {
     const text = "Hello Excalidraw";
     // Length of "Excalidraw" is 100 and exacty equal to max width
-    const res = wrapText(text, font, 100);
+    const res = wrapText({originalText: text} as ExcalidrawTextElement, font, 100);
     expect(res).toEqual(`Hello\nExcalidraw`);
   });
 
   it("should return the text as is if max width is invalid", () => {
     const text = "Hello Excalidraw";
-    expect(wrapText(text, font, NaN)).toEqual(text);
-    expect(wrapText(text, font, -1)).toEqual(text);
-    expect(wrapText(text, font, Infinity)).toEqual(text);
+    expect(wrapText({originalText: text} as ExcalidrawTextElement, font, NaN)).toEqual(text);
+    expect(wrapText({originalText: text} as ExcalidrawTextElement, font, -1)).toEqual(text);
+    expect(wrapText({originalText: text} as ExcalidrawTextElement, font, Infinity)).toEqual(text);
   });
 
   it("should show the text correctly when max width reached", () => {
     const text = "Hello😀";
     const maxWidth = 10;
-    const res = wrapText(text, font, maxWidth);
+    const res = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth);
     expect(res).toBe("H\ne\nl\nl\no\n😀");
   });
 
   it("should not wrap number when wrapping line", () => {
     const text = "don't wrap this number 99,100.99";
     const maxWidth = 300;
-    const res = wrapText(text, font, maxWidth);
+    const res = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth);
     expect(res).toBe("don't wrap this number\n99,100.99");
   });
 
   it("should trim all trailing whitespaces", () => {
     const text = "Hello     ";
     const maxWidth = 50;
-    const res = wrapText(text, font, maxWidth);
+    const res = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth);
     expect(res).toBe("Hello");
   });
 
   it("should trim all but one trailing whitespaces", () => {
     const text = "Hello     ";
     const maxWidth = 60;
-    const res = wrapText(text, font, maxWidth);
+    const res = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth);
     expect(res).toBe("Hello ");
   });
 
   it("should keep preceding whitespaces and trim all trailing whitespaces", () => {
     const text = "  Hello  World";
     const maxWidth = 90;
-    const res = wrapText(text, font, maxWidth);
+    const res = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth);
     expect(res).toBe("  Hello\nWorld");
   });
 
   it("should keep some preceding whitespaces, trim trailing whitespaces, but kep those that fit in the trailing line", () => {
     const text = "   Hello  World            ";
     const maxWidth = 90;
-    const res = wrapText(text, font, maxWidth);
+    const res = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth);
     expect(res).toBe("   Hello\nWorld    ");
   });
 
   it("should trim keep those whitespace that fit in the trailing line", () => {
     const text = "Hello   Wo rl  d                     ";
     const maxWidth = 100;
-    const res = wrapText(text, font, maxWidth);
+    const res = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth);
     expect(res).toBe("Hello   Wo\nrl  d     ");
   });
 
   it("should support multiple (multi-codepoint) emojis", () => {
     const text = "😀🗺🔥👩🏽‍🦰👨‍👩‍👧‍👦🇨🇿";
     const maxWidth = 1;
-    const res = wrapText(text, font, maxWidth);
+    const res = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth);
     expect(res).toBe("😀\n🗺\n🔥\n👩🏽‍🦰\n👨‍👩‍👧‍👦\n🇨🇿");
   });
 
   it("should wrap the text correctly when text contains hyphen", () => {
     let text =
       "Wikipedia is hosted by Wikimedia- Foundation, a non-profit organization that also hosts a range-of other projects";
-    const res = wrapText(text, font, 110);
+    const res = wrapText({originalText: text} as ExcalidrawTextElement, font, 110);
     expect(res).toBe(
       `Wikipedia\nis hosted\nby\nWikimedia-\nFoundation,\na non-\nprofit\norganizatio\nn that also\nhosts a\nrange-of\nother\nprojects`,
     );
 
     text = "Hello thereusing-now";
-    expect(wrapText(text, font, 100)).toEqual("Hello\nthereusing\n-now");
+    expect(wrapText({originalText: text} as ExcalidrawTextElement, font, 100)).toEqual("Hello\nthereusing\n-now");
   });
 
   it("should support wrapping nested lists", () => {
     const text = `\tA) one tab\t\t- two tabs        - 8 spaces`;
 
     const maxWidth = 100;
-    const res = wrapText(text, font, maxWidth);
+    const res = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth);
     expect(res).toBe(`\tA) one\ntab\t\t- two\ntabs\n- 8 spaces`);
 
     const maxWidth2 = 50;
-    const res2 = wrapText(text, font, maxWidth2);
+    const res2 = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth2);
     expect(res2).toBe(`\tA)\none\ntab\n- two\ntabs\n- 8\nspace\ns`);
   });
 
@@ -107,7 +107,7 @@ describe("Test wrapText", () => {
       // "안녕하세요" (Hangul) + "こんにちは世界" (Hiragana, Kanji) + "ｺﾝﾆﾁハ" (Katakana) + "你好" (Han) = "Hello Hello World Hello Hi"
       const text = "안녕하세요こんにちは世界ｺﾝﾆﾁハ你好";
       const maxWidth = 10;
-      const res = wrapText(text, font, maxWidth);
+      const res = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth);
       expect(res).toBe(
         "안\n녕\n하\n세\n요\nこ\nん\nに\nち\nは\n世\n界\nｺ\nﾝ\nﾆ\nﾁ\nハ\n你\n好",
       );
@@ -117,7 +117,7 @@ describe("Test wrapText", () => {
       // "안녕하세요" (Hangul) + "こんにちは世界" (Hiragana, Kanji) + "ｺﾝﾆﾁハ" (Katakana) + "你好" (Han) = "Hello Hello World Hello Hi"
       const text = "안녕하세요こんにちは世界ｺﾝﾆﾁハ你好";
       const maxWidth = 30;
-      const res = wrapText(text, font, maxWidth);
+      const res = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth);
 
       // measureText is mocked, so it's not precisely what would happen in prod
       expect(res).toBe("안녕하\n세요こ\nんにち\nは世界\nｺﾝﾆ\nﾁハ你\n好");
@@ -127,58 +127,58 @@ describe("Test wrapText", () => {
       const text = `a醫 醫      bb  你好  world-i-😀🗺🔥`;
 
       const maxWidth = 150;
-      const res = wrapText(text, font, maxWidth);
+      const res = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth);
       expect(res).toBe(`a醫 醫      bb  你\n好  world-i-😀🗺\n🔥`);
 
       const maxWidth2 = 50;
-      const res2 = wrapText(text, font, maxWidth2);
+      const res2 = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth2);
       expect(res2).toBe(`a醫 醫\nbb  你\n好\nworld\n-i-😀\n🗺🔥`);
 
       const maxWidth3 = 30;
-      const res3 = wrapText(text, font, maxWidth3);
+      const res3 = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth3);
       expect(res3).toBe(`a醫\n醫\nbb\n你好\nwor\nld-\ni-\n😀\n🗺\n🔥`);
     });
 
     it("should break before and after a regular CJK character", () => {
       const text = "HelloたWorld";
       const maxWidth1 = 50;
-      const res1 = wrapText(text, font, maxWidth1);
+      const res1 = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth1);
       expect(res1).toBe("Hello\nた\nWorld");
 
       const maxWidth2 = 60;
-      const res2 = wrapText(text, font, maxWidth2);
+      const res2 = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth2);
       expect(res2).toBe("Helloた\nWorld");
     });
 
     it("should break before and after certain CJK symbols", () => {
       const text = "こんにちは〃世界";
       const maxWidth1 = 50;
-      const res1 = wrapText(text, font, maxWidth1);
+      const res1 = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth1);
       expect(res1).toBe("こんにちは\n〃世界");
 
       const maxWidth2 = 60;
-      const res2 = wrapText(text, font, maxWidth2);
+      const res2 = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth2);
       expect(res2).toBe("こんにちは〃\n世界");
     });
 
     it("should break after, not before for certain CJK pairs", () => {
       const text = "Hello た。";
       const maxWidth = 70;
-      const res = wrapText(text, font, maxWidth);
+      const res = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth);
       expect(res).toBe("Hello\nた。");
     });
 
     it("should break before, not after for certain CJK pairs", () => {
       const text = "Hello「たWorld」";
       const maxWidth = 60;
-      const res = wrapText(text, font, maxWidth);
+      const res = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth);
       expect(res).toBe("Hello\n「た\nWorld」");
     });
 
     it("should break after, not before for certain CJK character pairs", () => {
       const text = "「Helloた」World";
       const maxWidth = 70;
-      const res = wrapText(text, font, maxWidth);
+      const res = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth);
       expect(res).toBe("「Hello\nた」World");
     });
 
@@ -188,13 +188,13 @@ describe("Test wrapText", () => {
 （括号）、逗号，句号。空格 换行　全角符号…—`;
 
       const maxWidth1 = 80;
-      const res1 = wrapText(text, font, maxWidth1);
+      const res1 = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth1);
       expect(res1).toBe(`中国你好！这是一\n个测试。
 我们来看看：人民\n币¥1234「很\n贵」
 （括号）、逗号，\n句号。空格 换行\n全角符号…—`);
 
       const maxWidth2 = 50;
-      const res2 = wrapText(text, font, maxWidth2);
+      const res2 = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth2);
       expect(res2).toBe(`中国你好！\n这是一个测\n试。
 我们来看\n看：人民币\n¥1234\n「很贵」
 （括号）、\n逗号，句\n号。空格\n换行　全角\n符号…—`);
@@ -207,14 +207,14 @@ describe("Test wrapText", () => {
   空白 改行　全角記号…ー`;
 
       const maxWidth1 = 80;
-      const res1 = wrapText(text, font, maxWidth1);
+      const res1 = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth1);
       expect(res1).toBe(`日本こんにちは！\nこれはテストで\nす。
   見てみましょ\nう：円￥1234\n「高い」
   （括弧）、読\n点、句点。
   空白 改行\n全角記号…ー`);
 
       const maxWidth2 = 50;
-      const res2 = wrapText(text, font, maxWidth2);
+      const res2 = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth2);
       expect(res2).toBe(`日本こんに\nちは！これ\nはテストで\nす。
   見てみ\nましょう：\n円\n￥1234\n「高い」
   （括\n弧）、読\n点、句点。
@@ -228,14 +228,14 @@ describe("Test wrapText", () => {
 공백 줄바꿈　전각기호…—`;
 
       const maxWidth1 = 80;
-      const res1 = wrapText(text, font, maxWidth1);
+      const res1 = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth1);
       expect(res1).toBe(`한국 안녕하세\n요! 이것은 테\n스트입니다.
 우리 보자: 원\n화₩1234「비\n싸다」
 (괄호), 쉼\n표, 마침표.
 공백 줄바꿈　전\n각기호…—`);
 
       const maxWidth2 = 60;
-      const res2 = wrapText(text, font, maxWidth2);
+      const res2 = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth2);
       expect(res2).toBe(`한국 안녕하\n세요! 이것\n은 테스트입\n니다.
 우리 보자:\n원화\n₩1234\n「비싸다」
 (괄호),\n쉼표, 마침\n표.
@@ -248,19 +248,19 @@ describe("Test wrapText", () => {
 
     it("should preserve leading whitespaces", () => {
       const maxWidth = 120;
-      const res = wrapText(text, font, maxWidth);
+      const res = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth);
       expect(res).toBe("  \t   Hello\nworld");
     });
 
     it("should break and collapse leading whitespaces when line breaks", () => {
       const maxWidth = 60;
-      const res = wrapText(text, font, maxWidth);
+      const res = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth);
       expect(res).toBe("\nHello\nworld");
     });
 
     it("should break and collapse leading whitespaces whe words break", () => {
       const maxWidth = 30;
-      const res = wrapText(text, font, maxWidth);
+      const res = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth);
       expect(res).toBe("\nHel\nlo\nwor\nld");
     });
   });
@@ -269,28 +269,28 @@ describe("Test wrapText", () => {
     it("shouldn't add new lines for trailing spaces", () => {
       const text = "Hello whats up     ";
       const maxWidth = 190;
-      const res = wrapText(text, font, maxWidth);
+      const res = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth);
       expect(res).toBe(text);
     });
 
     it("should ignore trailing whitespaces when line breaks", () => {
       const text = "Hippopotomonstrosesquippedaliophobia        ??????";
       const maxWidth = 400;
-      const res = wrapText(text, font, maxWidth);
+      const res = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth);
       expect(res).toBe("Hippopotomonstrosesquippedaliophobia\n??????");
     });
 
     it("should not ignore trailing whitespaces when word breaks", () => {
       const text = "Hippopotomonstrosesquippedaliophobia        ??????";
       const maxWidth = 300;
-      const res = wrapText(text, font, maxWidth);
+      const res = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth);
       expect(res).toBe("Hippopotomonstrosesquippedalio\nphobia        ??????");
     });
 
     it("should ignore trailing whitespaces when word breaks and line breaks", () => {
       const text = "Hippopotomonstrosesquippedaliophobia        ??????";
       const maxWidth = 180;
-      const res = wrapText(text, font, maxWidth);
+      const res = wrapText({originalText: text} as ExcalidrawTextElement, font, maxWidth);
       expect(res).toBe("Hippopotomonstrose\nsquippedaliophobia\n??????");
     });
   });
@@ -328,7 +328,7 @@ describe("Test wrapText", () => {
       },
     ].forEach((data) => {
       it(`should ${data.desc}`, () => {
-        const res = wrapText(text, font, data.width);
+        const res = wrapText({originalText: text} as ExcalidrawTextElement, font, data.width);
         expect(res).toEqual(data.res);
       });
     });
@@ -354,7 +354,7 @@ describe("Test wrapText", () => {
       },
     ].forEach((data) => {
       it(`should respect new lines and ${data.desc}`, () => {
-        const res = wrapText(text, font, data.width);
+        const res = wrapText({originalText: text} as ExcalidrawTextElement, font, data.width);
         expect(res).toEqual(data.res);
       });
     });
@@ -382,7 +382,7 @@ describe("Test wrapText", () => {
       },
     ].forEach((data) => {
       it(`should ${data.desc}`, () => {
-        const res = wrapText(text, font, data.width);
+        const res = wrapText({originalText: text} as ExcalidrawTextElement, font, data.width);
         expect(res).toEqual(data.res);
       });
     });

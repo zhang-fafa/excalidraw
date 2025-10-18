@@ -337,12 +337,12 @@ export const resizeSingleTextElement = (
     const newWidth = Math.max(minWidth, nextWidth);
 
     const text = wrapText(
-      element.originalText,
+      element,
       getFontString(element),
       Math.abs(newWidth),
     );
     const metrics = measureText(
-      text,
+      element,
       getFontString(element),
       element.lineHeight,
     );
@@ -741,6 +741,7 @@ export const resizeSingleElement = (
       const minWidth = getApproxMinLineWidth(
         getFontString(boundTextElement),
         boundTextElement.lineHeight,
+        boundTextElement.letterSpacing
       );
       const minHeight = getApproxMinLineHeight(
         boundTextElement.fontSize,

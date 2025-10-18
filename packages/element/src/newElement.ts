@@ -257,7 +257,7 @@ export const newTextElement = (
   const lineHeight = opts.lineHeight || getLineHeight(fontFamily);
   const text = normalizeText(opts.text);
   const metrics = measureText(
-    text,
+    {text, letterSpacing} as ExcalidrawTextElement,
     getFontString({ fontFamily, fontSize }),
     lineHeight,
   );
@@ -305,7 +305,7 @@ const getAdjustedDimensions = (
   height: number;
 } => {
   let { width: nextWidth, height: nextHeight } = measureText(
-    nextText,
+    element,
     getFontString(element),
     element.lineHeight,
   );
@@ -325,7 +325,7 @@ const getAdjustedDimensions = (
     element.autoResize
   ) {
     const prevMetrics = measureText(
-      element.text,
+      element,
       getFontString(element),
       element.lineHeight,
     );
@@ -432,7 +432,7 @@ export const refreshTextDimensions = (
   }
   if (container || !textElement.autoResize) {
     text = wrapText(
-      text,
+      textElement,
       getFontString(textElement),
       container
         ? getBoundTextMaxWidth(container, textElement)
