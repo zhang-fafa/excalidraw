@@ -254,7 +254,15 @@ export const textWysiwyg = ({
         maxWidth = (appState.width - 8 - viewportX) / appState.zoom.value;
         width = Math.min(width, maxWidth);
       } else {
-        width += 0.5
+        // 对于容器中的文本，需要重新计算宽度以考虑letterSpacing
+        const letterSpacing = updatedTextElement.letterSpacing || 0;
+        const wrappedText = wrapText(
+          updatedTextElement,
+          font,
+          maxWidth
+        );
+        width = getTextWidth(wrappedText, font, letterSpacing);
+        width += 0.5; // 添加一点缓冲
       }
 
       // console.log('width1111', width, editable.value, updatedTextElement)
@@ -385,6 +393,31 @@ export const textWysiwyg = ({
         editable.selectionStart = selectionStart;
         editable.selectionEnd = selectionStart;
       }
+      
+      // 重新计算宽度以适应新的文本内容
+      const container = getContainerElement(
+        element,
+        app.scene.getNonDeletedElementsMap(),
+      );
+      if (container) {
+        const boundTextElement = getBoundTextElement(
+          container,
+          app.scene.getNonDeletedElementsMap(),
+        );
+        const letterSpacing = boundTextElement?.letterSpacing || 0;
+        const font = getFontString({
+          fontSize: app.state.currentItemFontSize,
+          fontFamily: app.state.currentItemFontFamily,
+        });
+        const wrappedText = wrapText(
+          {originalText: editable.value, letterSpacing} as ExcalidrawTextElement,
+          font,
+          getBoundTextMaxWidth(container, boundTextElement),
+        );
+        const width = getTextWidth(wrappedText, font, letterSpacing);
+        editable.style.width = `${width + 0.5}px`;
+      }
+      
       onChange(editable.value);
     };
   }
