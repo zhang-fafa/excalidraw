@@ -41,6 +41,7 @@ import { newElementWith } from "@excalidraw/element";
 import {
   getBoundTextElement,
   redrawTextBoundingBox,
+  getBoundTextMaxWidth,
 } from "@excalidraw/element";
 
 import {
@@ -732,11 +733,15 @@ export const actionChangeLetterSpacing = register({
         appState,
         (el) => {
           if (isTextElement(el)) {
+            // 获取容器的最大宽度
+            const container = app.scene.getContainerElement(el);
+            const maxWidth = container ? getBoundTextMaxWidth(container, el) : el.width;
+            
             //从新计算换行
             const newText = wrapText({
               originalText: el.originalText,
               letterSpacing: value
-            } as ExcalidrawTextElement, getFontString(el), el.width)
+            } as ExcalidrawTextElement, getFontString(el), maxWidth)
             let newElement: ExcalidrawTextElement = newElementWith(el, {
               letterSpacing: value,
               text: newText
