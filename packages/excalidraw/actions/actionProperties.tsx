@@ -1059,7 +1059,7 @@ export const actionChangeFontSize = register({
                       }}
                       onClick={()=>{
                         updateData(item.value);
-                        onClose()
+                        // onClose()
                       }}
                       >
                       { item.label }
