@@ -37,7 +37,7 @@ import {
   isProdEnv,
   mapFind,
   reduceToCommonValue,
-  updateActiveTool,
+  updateActiveTool
 } from "@excalidraw/common";
 
 import { measureText } from "@excalidraw/element";
@@ -857,6 +857,7 @@ const convertElementType = <
           newLinearElement({
             ...element,
             type: "line",
+            polygon: true
           }),
         );
       }

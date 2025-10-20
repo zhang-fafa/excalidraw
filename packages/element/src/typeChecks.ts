@@ -10,6 +10,7 @@ import type { Bounds } from "./bounds";
 import type {
   ExcalidrawElement,
   ExcalidrawTextElement,
+  ExcalidrawRectangleElement,
   ExcalidrawEmbeddableElement,
   ExcalidrawLinearElement,
   ExcalidrawBindableElement,
@@ -195,6 +196,13 @@ export const isBindableElement = (
       (element.type === "text" && !element.containerId))
   );
 };
+
+
+export const isRectangleElement = (
+  element: ExcalidrawElement
+): element is ExcalidrawRectangleElement => {
+  return element.type === "rectangle";
+}
 
 export const isRectanguloidElement = (
   element?: ExcalidrawElement | null,

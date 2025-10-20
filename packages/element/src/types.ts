@@ -2,6 +2,7 @@ import type { LocalPoint, Radians } from "@excalidraw/math";
 
 import type {
   FONT_FAMILY,
+  CROP_POLYGON,
   ROUNDNESS,
   TEXT_ALIGN,
   THEME,
@@ -87,6 +88,7 @@ export type ExcalidrawSelectionElement = _ExcalidrawElementBase & {
 
 export type ExcalidrawRectangleElement = _ExcalidrawElementBase & {
   type: "rectangle";
+  cropPolygon: keyof typeof CROP_POLYGON;
 };
 
 export type ExcalidrawDiamondElement = _ExcalidrawElementBase & {
@@ -156,6 +158,8 @@ export type ExcalidrawImageElement = _ExcalidrawElementBase &
 
     // 新增字段
     imageUrl: string | null; // 图片链接
+
+    cropPolygon: keyof typeof CROP_POLYGON;
   }>;
 
 export type InitializedExcalidrawImageElement = MarkNonNullable<

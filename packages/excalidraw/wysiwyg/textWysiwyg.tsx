@@ -9,6 +9,8 @@ import {
   getFontFamilyString,
   isTestEnv,
   MIME_TYPES,
+  FONT_FAMILY,
+  FONT_METADATA,
 } from "@excalidraw/common";
 
 import {
@@ -137,6 +139,13 @@ export const textWysiwyg = ({
     
     if (!updatedTextElement) {
       return;
+    }
+
+    // 输入文字时钱包字体颜色不是透明的
+    if(appState.currentItemBackgroundColor === "transparent"){
+      app.setState({
+        currentItemBackgroundColor: "black"
+      })
     }
 
     const { textAlign, verticalAlign } = updatedTextElement;

@@ -12,6 +12,7 @@ import {
   DEFAULT_GRID_STEP,
   isTestEnv,
   DEFAULT_LETTER_SPACING,
+  DEFAULT_CROP_POLYGON,
 } from "@excalidraw/common";
 
 import type { AppState, NormalizedZoomValue } from "./types";
@@ -36,6 +37,7 @@ export const getDefaultAppState = (): Omit<
     currentItemFontSize: DEFAULT_FONT_SIZE,
     currentItemLetterSpacing: DEFAULT_LETTER_SPACING,
     currentItemOpacity: DEFAULT_ELEMENT_PROPS.opacity,
+    currentItemCropPolygon: DEFAULT_CROP_POLYGON,
     currentItemUrl: null,
     currentItemRoughness: DEFAULT_ELEMENT_PROPS.roughness,
     currentItemStartArrowhead: null,
@@ -165,6 +167,7 @@ const APP_STATE_STORAGE_CONF = (<
     export: false,
     server: false,
   },
+  currentItemCropPolygon: { browser: true, export: false, server: false },
   currentItemOpacity: { browser: true, export: false, server: false },
   currentItemRoughness: { browser: true, export: false, server: false },
   currentItemStartArrowhead: { browser: true, export: false, server: false },

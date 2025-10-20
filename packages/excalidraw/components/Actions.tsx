@@ -213,6 +213,8 @@ export const SelectedShapeActions = ({
 
       {renderAction("changeOpacity")}
 
+      {renderAction("changeCropPolygon")}
+
       <fieldset>
         <legend>{t("labels.layers")}</legend>
         <div className="buttonList">
@@ -362,6 +364,10 @@ export const ShapesSwitcher = ({
                     type: value,
                   });
                 } else {
+                  // 设置描边颜色为透明
+                  // app.state.currentItemStrokeColor = "transparent";
+                  app.state.currentItemLetterSpacing = 0;
+                  app.state.currentItemStrokeWidth = 1;
                   app.setActiveTool({ type: value });
                 }
               }}

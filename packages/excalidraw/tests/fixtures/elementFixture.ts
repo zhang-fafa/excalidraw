@@ -1,4 +1,4 @@
-import { DEFAULT_FONT_FAMILY, DEFAULT_LETTER_SPACING } from "@excalidraw/common";
+import { DEFAULT_FONT_FAMILY, DEFAULT_LETTER_SPACING, DEFAULT_CROP_POLYGON } from "@excalidraw/common";
 
 import type { Radians } from "@excalidraw/math";
 
@@ -35,6 +35,7 @@ const elementBase: Omit<ExcalidrawElement, "type"> = {
 export const rectangleFixture: ExcalidrawElement = {
   ...elementBase,
   type: "rectangle",
+  cropPolygon: DEFAULT_CROP_POLYGON
 };
 export const embeddableFixture: ExcalidrawElement = {
   ...elementBase,
@@ -52,6 +53,7 @@ export const rectangleWithLinkFixture: ExcalidrawElement = {
   ...elementBase,
   type: "rectangle",
   link: "excalidraw.com",
+  cropPolygon: DEFAULT_CROP_POLYGON
 };
 
 export const textFixture: ExcalidrawElement = {

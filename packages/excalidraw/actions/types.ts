@@ -70,6 +70,7 @@ export type ActionName =
   | "changeArrowhead"
   | "changeArrowType"
   | "changeOpacity"
+  | "changeCropPolygon"
   | "changeFontSize"
   | "changeLetterSpacing"
   | "toggleCanvasMenu"

@@ -11,6 +11,7 @@ import {
   getFontString,
   getUpdatedTimestamp,
   getLineHeight,
+  DEFAULT_CROP_POLYGON
 } from "@excalidraw/common";
 
 import type { Radians } from "@excalidraw/math";
@@ -34,6 +35,10 @@ import type {
   ExcalidrawTextElement,
   ExcalidrawLinearElement,
   ExcalidrawGenericElement,
+  ExcalidrawSelectionElement,
+  ExcalidrawRectangleElement,
+  ExcalidrawDiamondElement,
+  ExcalidrawEllipseElement,
   NonDeleted,
   TextAlign,
   VerticalAlign,
@@ -156,12 +161,30 @@ const _newElementBase = <T extends ExcalidrawElement>(
   return element;
 };
 
+
 export const newElement = (
   opts: {
     type: ExcalidrawGenericElement["type"];
   } & ElementConstructorOpts,
-): NonDeleted<ExcalidrawGenericElement> =>
-  _newElementBase<ExcalidrawGenericElement>(opts.type, opts);
+): NonDeleted<ExcalidrawGenericElement> => {
+  switch (opts.type) {
+    case "selection":
+      return _newElementBase<ExcalidrawSelectionElement>(opts.type, opts);
+    case "rectangle":
+      const baseElement = _newElementBase<ExcalidrawRectangleElement>(opts.type, opts);
+      return {
+        ...baseElement,
+        cropPolygon: (opts as any).cropPolygon || "juxing", // Provide default value
+      } as ExcalidrawRectangleElement;
+    case "diamond":
+      return _newElementBase<ExcalidrawDiamondElement>(opts.type, opts);
+    case "ellipse":
+      return _newElementBase<ExcalidrawEllipseElement>(opts.type, opts);
+    default:
+      throw new Error(`Unknown element type: ${opts.type}`);
+  }
+};
+
 
 export const newEmbeddableElement = (
   opts: {
@@ -539,6 +562,7 @@ export const newImageElement = (
     scale?: ExcalidrawImageElement["scale"];
     crop?: ExcalidrawImageElement["crop"];
     imageUrl?: ExcalidrawImageElement["imageUrl"];
+    cropPolygon?: ExcalidrawImageElement["cropPolygon"];
   } & ElementConstructorOpts,
 ): NonDeleted<ExcalidrawImageElement> => {
   return {
@@ -551,5 +575,6 @@ export const newImageElement = (
     scale: opts.scale ?? [1, 1],
     crop: opts.crop ?? null,
     imageUrl: opts.imageUrl ?? null,
+    cropPolygon: opts.cropPolygon ?? DEFAULT_CROP_POLYGON
   };
 };

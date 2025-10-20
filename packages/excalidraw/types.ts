@@ -3,6 +3,7 @@ import type {
   UserIdleState,
   throttleRAF,
   MIME_TYPES,
+  CROP_POLYGON,
 } from "@excalidraw/common";
 
 import type { SuggestedBinding } from "@excalidraw/element";
@@ -332,6 +333,7 @@ export interface AppState {
   currentItemUrl: string | null;
   currentItemFontFamily: FontFamilyValues;
   currentItemFontSize: number;
+  currentItemCropPolygon: keyof typeof CROP_POLYGON;
   currentItemLetterSpacing: number;
   currentItemTextAlign: TextAlign;
   currentItemStartArrowhead: Arrowhead | null;

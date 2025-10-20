@@ -23,10 +23,12 @@ import {
   isTransparent,
   reduceToCommonValue,
   DEFAULT_LETTER_SPACING,
-  getFontString
+  getFontString,
+  CROP_POLYGON,
+  DEFAULT_CROP_POLYGON
 } from "@excalidraw/common";
 
-import { canBecomePolygon, getNonDeletedElements } from "@excalidraw/element";
+import { canBecomePolygon, getNonDeletedElements, isImageElement, isRectangleElement } from "@excalidraw/element";
 
 import {
   bindLinearElement,
@@ -71,6 +73,7 @@ import type {
   ExcalidrawBindableElement,
   ExcalidrawElement,
   ExcalidrawLinearElement,
+  ExcalidrawRectangleElement,
   ExcalidrawTextElement,
   FontFamilyValues,
   TextAlign,
@@ -136,6 +139,10 @@ import {
   ArrowheadCrowfootIcon,
   ArrowheadCrowfootOneIcon,
   ArrowheadCrowfootOneOrManyIcon,
+  RectangleIcon,
+  EllipseIcon,
+  starIcon,
+  moreIcon
 } from "../components/icons";
 
 import { Fonts } from "../fonts";
@@ -156,6 +163,7 @@ import { useExcalidrawContainer } from "../components/App";
 import { register } from "./register";
 
 import type { AppClassProperties, AppState, Primitive } from "../types";
+import { Center } from "../components/welcome-screen/WelcomeScreen.Center";
 
 
 const FONT_SIZE_RELATIVE_INCREASE_STEP = 0.1;
@@ -1060,6 +1068,162 @@ export const actionChangeFontSize = register({
                       onClick={()=>{
                         updateData(item.value);
                         // onClose()
+                      }}
+                      >
+                      { item.label }
+                    </div>
+                  })
+                }
+              </PropertiesPopover>
+            )
+          }
+        </Popover.Root>
+      </div>
+    </fieldset>
+  },
+});
+
+//裁剪多变形
+export const actionChangePolygon = register({
+  name: "changeCropPolygon",
+  label: "labels.cropPolygon",
+  trackEvent: false,
+  perform: (elements, appState, value, app) => {
+    return {
+      elements: changeProperty(
+        elements,
+        appState,
+        (el) => {
+          return el;
+        },
+        true,
+      ),
+      appState: {
+        ...appState,
+        currentItemPolygon: DEFAULT_CROP_POLYGON,
+      },
+      captureUpdate: CaptureUpdateAction.IMMEDIATELY,
+    }
+  },
+  PanelComponent: ({ elements, appState, updateData, app, data }) => {
+    const { container } = useExcalidrawContainer();
+    const currentValue = getFormValue(
+      elements,
+      app,
+      (element): keyof typeof CROP_POLYGON => {
+        if (isRectangleElement(element)) {
+          return element.cropPolygon || DEFAULT_CROP_POLYGON;
+        }
+        if (isImageElement(element)) {
+          return element.cropPolygon || DEFAULT_CROP_POLYGON;
+        }
+        return DEFAULT_CROP_POLYGON;
+      },
+      (element) =>
+        isRectangleElement(element) || 
+        isImageElement(element) ||
+        getBoundTextElement(
+          element,
+          app.scene.getNonDeletedElementsMap(),
+        ) !== null,
+      (hasSelection) => hasSelection ? DEFAULT_CROP_POLYGON : appState.currentItemCropPolygon,
+    );
+    const [openSelectPolygon, setOpenSelectPolygon] = useState<boolean>(false);
+    const displayValue: keyof typeof CROP_POLYGON = currentValue || DEFAULT_CROP_POLYGON;
+    // 使用之前定义的POLYGON对象生成选项
+    const generatePolygonOptions = () => {
+      return Object.entries(CROP_POLYGON).map(([key, config]) => ({
+        key: key as keyof typeof CROP_POLYGON,
+        label: config.label,
+        value: config.value
+      }));
+    };
+    const polygonOptions = generatePolygonOptions();
+    const onClose = ()=>{
+    }
+    return <fieldset>
+      <legend>多边形裁剪</legend>
+      <div className="buttonList">
+        <RadioSelection
+          group="polygon"
+          options={[
+            {
+              value: 'juxing',
+              text: "矩形",
+              icon: RectangleIcon,
+              testId: "icon-rectangle",
+            },
+            {
+              value: 'yuanxing',
+              text: "圆形",
+              icon: EllipseIcon,
+              testId: "icon-ellipse",
+            },
+            {
+              value: 'xingxing',
+              text: "星形",
+              icon: starIcon,
+              testId: "icon-star",
+            },
+          ]}
+          value={displayValue}
+          onChange={(value) => {
+            updateData(value)
+          }}
+        />
+        <Popover.Root 
+          open={openSelectPolygon} 
+          onOpenChange={(isOpen: boolean)=>{
+            if(!isOpen){
+              onClose()
+            }
+          }}
+        >
+          <Popover.Trigger asChild>
+            <button
+              className="dropdown-select dropdown-select--floating"
+              onClick={() => setOpenSelectPolygon(!openSelectPolygon)}
+              title={t("labels.fontSize")}
+              aria-label={t("labels.fontSize")}
+              style={{ 
+                minWidth: '46px',
+                textAlign: 'center',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                border: '1px solid var(--color-border)',
+                background: 'var(--button-bg, var(--island-bg-color))',
+                padding:'0 8px',
+                marginLeft: '0px'
+              }}
+            >
+              <span style={{
+                display: "flex",
+                alignItems: "center"
+              }}>{ polygonOptions.filter(item=>{
+                item.value === displayValue
+              })[0]?.label || moreIcon }</span>
+            </button>
+          </Popover.Trigger>
+          {
+            openSelectPolygon && (
+              <PropertiesPopover
+                className="properties-content"
+                container={container}
+                style={{ width: "8rem", height: "20rem", overflowY: 'auto' }}
+                onClose={onClose}
+              >
+                {
+                  polygonOptions.map(item=>{
+                    return <div 
+                      key={item.value} 
+                      style={{
+                        background: displayValue === item.value ? 'var(--button-selected-bg, var(--color-surface-primary-container))' : 'transparent',
+                        padding: '5px 10px',
+                        borderRadius: '8px',
+                      }}
+                      onClick={()=>{
+                        updateData(item.value);
                       }}
                       >
                       { item.label }

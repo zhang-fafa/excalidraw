@@ -18,6 +18,7 @@ import {
   normalizeLink,
   getLineHeight,
   DEFAULT_LETTER_SPACING,
+  DEFAULT_CROP_POLYGON,
 } from "@excalidraw/common";
 import { getNonDeletedElements, isValidPolygon } from "@excalidraw/element";
 import { normalizeFixedPoint } from "@excalidraw/element";
@@ -314,6 +315,7 @@ export const restoreElement = (
         scale: element.scale || [1, 1],
         crop: element.crop ?? null,
         imageUrl: element.imageUrl ?? null,
+        cropPolygon: element.cropPolygon ?? DEFAULT_CROP_POLYGON
       });
     case "line":
     // @ts-ignore LEGACY type
