@@ -79,6 +79,7 @@ import { registerToast, type ToastOptions } from "./utils/toast";
 
 import { MyDialog } from "./components/common/Dialog";
 import { Save } from "./components/common/Save";
+import { FunctionLog } from "./components/FunctionLog";
 
 import CustomStats from "./CustomStats";
 import {
@@ -889,6 +890,7 @@ const ExcalidrawWrapper = () => {
               {collabError.message && <CollabError collabError={collabError} />}
               {excalidrawAPI ? (
                 <>
+                  <FunctionLog></FunctionLog>
                   <Save
                     elements={excalidrawAPI.getSceneElements()}
                     isMobile={false}

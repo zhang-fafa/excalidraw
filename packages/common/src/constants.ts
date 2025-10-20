@@ -544,23 +544,28 @@ export const DOUBLE_TAP_POSITION_THRESHOLD = 35;
 export const CROP_POLYGON = {
   "juxing": {
     label:'矩形',
-    value: ''
+    value: '',
+    type: 'rectangle'
   },
   "yuanxing": {
     label:'圆形',
-    value: 'ellipse(50% 50% at center)'
+    value: '',
+    type: 'ellipse'
   },
   "xingxing": {
     label: '星形',
-    value: 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)'
+    value: 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)',
+    type: 'polygon'
   },
   "sanjiaoxing-top": {
     label:'正三角形',
-    value: 'polygon(50% 0%, 0% 100%, 100% 100%)'
+    value: 'polygon(50% 0%, 0% 100%, 100% 100%)',
+    type: 'polygon'
   },
   "sanjiaoxing-bottom": {
     label:'倒三角形',
-    value: 'polygon(0% 0%, 100% 0%, 50% 100%)'
+    value: 'polygon(0% 0%, 100% 0%, 50% 100%)',
+    type: 'polygon'
   }
 };
 

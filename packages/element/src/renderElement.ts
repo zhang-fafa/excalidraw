@@ -14,6 +14,7 @@ import {
   getFontString,
   isRTL,
   getVerticalOffset,
+  CROP_POLYGON,
 } from "@excalidraw/common";
 
 import type {
@@ -73,7 +74,7 @@ import type {
 
 import type { StrokeOptions } from "perfect-freehand";
 import type { RoughCanvas } from "roughjs/bin/canvas";
-import { cropPolygon } from "./renderPolygonElement";
+import { applyCropPolygon } from "./renderPolygonElement";
 
 // using a stronger invert (100% vs our regular 93%) and saturate
 // as a temp hack to make images in dark theme look closer to original
@@ -650,12 +651,32 @@ const drawElementOnCanvas = (
 ) => {
   switch (element.type) {
     case "rectangle":
+      const cropConfig  = CROP_POLYGON[element?.cropPolygon];
+      if(cropConfig && (cropConfig.type === "ellipse" || cropConfig.value)){
+        context.lineJoin = "round";
+        context.lineCap = "round";
+        // 创建只有背景填充、无描边的元素配置
+        const fillOnlyElement = {
+          ...element, 
+          strokeWidth: 0,           // 禁用描边
+          strokeColor: "transparent"       // 确保无描边颜色
+        };
+        
+        // 生成并绘制只有填充的形状
+        const fillShape = ShapeCache.generateElementShape(fillOnlyElement, renderConfig);
+        if(fillShape) {
+          rc.draw(fillShape);
+        }
+        break;
+      }
+        
     case "iframe":
     case "embeddable":
     case "diamond":
     case "ellipse": {
       context.lineJoin = "round";
       context.lineCap = "round";
+
       rc.draw(ShapeCache.get(element)!);
       break;
     }
@@ -1200,7 +1221,18 @@ export const renderElement = (
           }
 
           context.translate(-shiftX, -shiftY);
+
+          // 应用裁剪
+          if (element.type === 'image' || element.type === 'rectangle') {
+            context.save(); // 为裁剪单独保存状态
+            applyCropPolygon(context, element, appState);
+          }
+
           drawElementOnCanvas(element, rc, context, renderConfig, appState, allElementsMap);
+
+          if (element.type === 'image' || element.type === 'rectangle') {
+            context.restore();
+          }
         }
 
         context.restore();
@@ -1270,6 +1302,12 @@ export const renderElement = (
           context.restore();
         }
 
+        // 在绘制缓存的元素内容之前应用裁剪
+        let appliedCrop = false;
+        if (element.type === 'image' || element.type === 'rectangle') {
+          context.save();
+          appliedCrop = applyCropPolygon(context, element, appState);
+        }
         drawElementFromCanvas(
           elementWithCanvas,
           context,
@@ -1278,13 +1316,12 @@ export const renderElement = (
           allElementsMap,
         );
 
+        // 如果应用了裁剪，恢复状态
+        if (appliedCrop) {
+          context.restore();
+        }
         // reset
         context.imageSmoothingEnabled = currentImageSmoothingStatus;
-
-        //绘制裁剪图形
-        if(element && isImageElement(element) || isRectangleElement(element)){
-          cropPolygon(context, element);
-        }
       }
       break;
     }
