@@ -86,10 +86,11 @@ export type ExcalidrawSelectionElement = _ExcalidrawElementBase & {
   type: "selection";
 };
 
-export type ExcalidrawRectangleElement = _ExcalidrawElementBase & {
-  type: "rectangle";
-  cropPolygon: keyof typeof CROP_POLYGON;
-};
+export type ExcalidrawRectangleElement = _ExcalidrawElementBase & 
+  Readonly<{
+    type: "rectangle";
+    cropPolygon: keyof typeof CROP_POLYGON;
+  }>
 
 export type ExcalidrawDiamondElement = _ExcalidrawElementBase & {
   type: "diamond";

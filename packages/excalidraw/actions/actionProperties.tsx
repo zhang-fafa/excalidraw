@@ -1093,8 +1093,15 @@ export const actionChangePolygon = register({
       elements: changeProperty(
         elements,
         appState,
-        (el) => {
-          return el;
+        (element) => {
+          if (isRectangleElement(element) || isImageElement(element)) {
+            return newElementWith(element, {
+              cropPolygon: value,
+            });
+          }else{
+            console.error("该功能只支持矩形和图片元素使用")
+          }
+          return element;
         },
         true,
       ),
@@ -1140,6 +1147,7 @@ export const actionChangePolygon = register({
     };
     const polygonOptions = generatePolygonOptions();
     const onClose = ()=>{
+      setOpenSelectPolygon(!openSelectPolygon)
     }
     return <fieldset>
       <legend>多边形裁剪</legend>
@@ -1183,8 +1191,8 @@ export const actionChangePolygon = register({
             <button
               className="dropdown-select dropdown-select--floating"
               onClick={() => setOpenSelectPolygon(!openSelectPolygon)}
-              title={t("labels.fontSize")}
-              aria-label={t("labels.fontSize")}
+              title="多边形裁剪"
+              aria-label="多边形裁剪"
               style={{ 
                 minWidth: '46px',
                 textAlign: 'center',
@@ -1200,9 +1208,13 @@ export const actionChangePolygon = register({
               <span style={{
                 display: "flex",
                 alignItems: "center"
-              }}>{ polygonOptions.filter(item=>{
-                item.value === displayValue
-              })[0]?.label || moreIcon }</span>
+              }}>
+                { 
+                  polygonOptions.filter(item=>{
+                    item.key === displayValue
+                  })[0]?.label || moreIcon
+                }
+              </span>
             </button>
           </Popover.Trigger>
           {
@@ -1216,14 +1228,15 @@ export const actionChangePolygon = register({
                 {
                   polygonOptions.map(item=>{
                     return <div 
-                      key={item.value} 
+                      key={item.key} 
                       style={{
-                        background: displayValue === item.value ? 'var(--button-selected-bg, var(--color-surface-primary-container))' : 'transparent',
+                        background: displayValue === item.key ? 'var(--button-selected-bg, var(--color-surface-primary-container))' : 'transparent',
                         padding: '5px 10px',
                         borderRadius: '8px',
                       }}
                       onClick={()=>{
-                        updateData(item.value);
+                        console.log('item.key', item.key)
+                        updateData(item.key);
                       }}
                       >
                       { item.label }
