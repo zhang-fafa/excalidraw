@@ -52,6 +52,7 @@ import {
   hasBoundTextElement,
   isMagicFrameElement,
   isImageElement,
+  isRectangleElement,
 } from "./typeChecks";
 import { getContainingFrame } from "./frame";
 import { getCornerRadius } from "./utils";
@@ -72,6 +73,7 @@ import type {
 
 import type { StrokeOptions } from "perfect-freehand";
 import type { RoughCanvas } from "roughjs/bin/canvas";
+import { cropPolygon } from "./renderPolygonElement";
 
 // using a stronger invert (100% vs our regular 93%) and saturate
 // as a temp hack to make images in dark theme look closer to original
@@ -1083,7 +1085,7 @@ export const renderElement = (
 
       break;
     }
-    case "rectangle":
+    case "rectangle": 
     case "diamond":
     case "ellipse":
     case "line":
@@ -1278,6 +1280,11 @@ export const renderElement = (
 
         // reset
         context.imageSmoothingEnabled = currentImageSmoothingStatus;
+
+        //绘制裁剪图形
+        if(element && isImageElement(element) || isRectangleElement(element)){
+          cropPolygon(context, element);
+        }
       }
       break;
     }

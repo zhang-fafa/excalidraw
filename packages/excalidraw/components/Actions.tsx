@@ -214,7 +214,7 @@ export const SelectedShapeActions = ({
 
       {renderAction("changeOpacity")}
       
-      {(isRectangleElement(targetElements[0]) || isImageElement(targetElements[0])) && renderAction("changeCropPolygon")}
+      {(targetElements[0] && isRectangleElement(targetElements[0]) || isImageElement(targetElements[0])) && renderAction("changeCropPolygon")}
 
       <fieldset>
         <legend>{t("labels.layers")}</legend>
