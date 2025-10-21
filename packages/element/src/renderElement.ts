@@ -58,7 +58,7 @@ import {
 import { getContainingFrame } from "./frame";
 import { getCornerRadius } from "./utils";
 
-import { ShapeCache } from "./shape";
+import { ShapeCache, generateRoughOptions } from "./shape";
 
 import type {
   ExcalidrawElement,
@@ -651,10 +651,11 @@ const drawElementOnCanvas = (
 ) => {
   switch (element.type) {
     case "rectangle":
+      //获取裁剪图形参数
       const cropConfig  = CROP_POLYGON[element?.cropPolygon];
+      context.lineJoin = "round";
+      context.lineCap = "round";
       if(cropConfig && (cropConfig.type === "ellipse" || cropConfig.value)){
-        context.lineJoin = "round";
-        context.lineCap = "round";
         // 创建只有背景填充、无描边的元素配置
         const fillOnlyElement = {
           ...element, 
@@ -667,9 +668,10 @@ const drawElementOnCanvas = (
         if(fillShape) {
           rc.draw(fillShape);
         }
-        break;
+      }else{
+        rc.draw(ShapeCache.get(element)!);
       }
-        
+      break;
     case "iframe":
     case "embeddable":
     case "diamond":
