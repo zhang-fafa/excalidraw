@@ -76,6 +76,49 @@ const drawSlightlyRoughEllipse = (
   context.stroke();
 };
 
+const drawSlightlyRoughPolygon = (
+  context: CanvasRenderingContext2D,
+  points: [number, number][],
+  offsetX: number,
+  offsetY: number,
+  roughness: number
+) => {
+  if (points.length < 3) return;
+  
+  const roughnessFactor = Math.min(roughness, 1) * 0.3; // 限制roughness影响
+  
+  context.beginPath();
+  
+  points.forEach((point, index) => {
+    const [px, py] = point;
+    
+    // 使用点的位置作为种子生成一致的随机偏移
+    const seed = Math.sin(px * 0.01) + Math.cos(py * 0.01) + index * 0.1;
+    const offsetPx = seed * roughnessFactor;
+    const offsetPy = (seed * 0.8) * roughnessFactor;
+    
+    const x = offsetX + px + offsetPx;
+    const y = offsetY + py + offsetPy;
+    
+    if (index === 0) {
+      context.moveTo(x, y);
+    } else {
+      context.lineTo(x, y);
+    }
+  });
+  
+  context.closePath();
+  context.stroke();
+};
+
+const getRoughnessLevel = (roughness: number) => {
+  // 这些值需要根据你的ROUGHNESS常量来调整
+  if (roughness >= 2) return 'cartoonist';  // 漫画家风格
+  if (roughness >= 1) return 'artist';      // 艺术风格  
+  if (roughness >= 0) return 'rough';       // 粗糙
+  return 'smooth';                          // 平滑
+};
+
 export const applyCropPolygon = (
   context: CanvasRenderingContext2D,
   element: ExcalidrawImageElement | ExcalidrawRectangleElement,
@@ -207,36 +250,107 @@ export const applyCropPolygon = (
         const points = parsePolygonPath(cropConfig.value, width, height);
         if (points.length > 0) {
           const [startX, startY] = points[0];
-          context.moveTo(
-            x + appState.scrollX + startX, 
-            y + appState.scrollY + startY
-          );
           
-          for (let i = 1; i < points.length; i++) {
-            const [pointX, pointY] = points[i];
-            context.lineTo(
-              x + appState.scrollX + pointX, 
-              y + appState.scrollY + pointY
-            );
-          }
-          context.closePath();
-
-          //描边
-          if (element.strokeWidth) {
-            context.save();
-            context.strokeStyle = element.strokeColor;
-            context.lineWidth = element.strokeWidth;
-            context.stroke();
-            context.restore();
-            
-            // 重新开始路径用于裁剪
+          // 创建多边形路径的通用函数
+          const createPolygonPath = (withTransform = true) => {
             context.beginPath();
-            context.moveTo(x + appState.scrollX + startX, y + appState.scrollY + startY);
+            
+            const baseX = withTransform ? x + appState.scrollX : 0;
+            const baseY = withTransform ? y + appState.scrollY : 0;
+            
+            context.moveTo(baseX + startX, baseY + startY);
+            
             for (let i = 1; i < points.length; i++) {
               const [pointX, pointY] = points[i];
-              context.lineTo(x + appState.scrollX + pointX, y + appState.scrollY + pointY);
+              context.lineTo(baseX + pointX, baseY + pointY);
             }
             context.closePath();
+          };
+          // 首次创建路径
+          createPolygonPath();
+          // 绘制描边
+          if (element.strokeWidth > 0 && element.strokeColor !== 'transparent') {
+            const roughnessLevel = getRoughnessLevel(element.roughness);
+            const isArtisticStyle = roughnessLevel === 'cartoonist' || roughnessLevel === 'artist';
+            
+            if (isArtisticStyle) {
+              // 艺术风格绘制
+              context.save();
+              context.translate(x + appState.scrollX, y + appState.scrollY);
+              
+              // 准备RoughJS多边形数据
+              const polygonPoints = points.map(([px, py]) => [px, py] as [number, number]);
+              
+              const polygonElement = {
+                ...element,
+                backgroundColor: 'transparent',
+                fillStyle: 'solid' as const,
+                roughness: element.roughness
+              };
+              
+              const roughOptions = generateRoughOptions(polygonElement);
+              roughOptions.fill = undefined;
+              roughOptions.fillStyle = undefined;
+              
+              // 艺术风格特殊设置
+              if (roughnessLevel === 'cartoonist') {
+                roughOptions.preserveVertices = false;
+                roughOptions.disableMultiStroke = false;
+                roughOptions.roughness = Math.max((roughOptions.roughness || 0), 2);
+              }
+              
+              const generator = rough.generator();
+              const polygonShape = generator.polygon(polygonPoints, roughOptions);
+              
+              const rc = rough.canvas(context.canvas);
+              rc.draw(polygonShape);
+              
+              context.restore();
+              
+            } else {
+              // 标准风格绘制
+              context.save();
+              context.strokeStyle = element.strokeColor;
+              context.lineWidth = element.strokeWidth;
+              context.lineCap = 'round';
+              context.lineJoin = 'round';
+              
+              // 线条样式设置
+              const setLineStyle = () => {
+                switch (element.strokeStyle) {
+                  case 'dashed':
+                    context.setLineDash([8, 8 + element.strokeWidth]);
+                    break;
+                  case 'dotted':
+                    context.setLineDash([1.5, 6 + element.strokeWidth]);
+                    break;
+                  case 'solid':
+                  default:
+                    context.setLineDash([]);
+                    break;
+                }
+              };
+              
+              setLineStyle();
+              
+              // 根据roughness选择绘制方法
+              if (element.roughness > 0 && element.roughness < ROUGHNESS.cartoonist) {
+                drawSlightlyRoughPolygon(
+                  context, 
+                  points, 
+                  x + appState.scrollX, 
+                  y + appState.scrollY, 
+                  element.roughness
+                );
+              } else {
+                context.stroke();
+              }
+              
+              context.restore();
+            }
+            
+            // 重新创建用于裁剪的路径
+            createPolygonPath();
           }
         }
         break;

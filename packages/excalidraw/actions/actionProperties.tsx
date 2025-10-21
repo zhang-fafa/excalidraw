@@ -78,6 +78,7 @@ import type {
   FontFamilyValues,
   TextAlign,
   VerticalAlign,
+  StrokeRoundness
 } from "@excalidraw/element/types";
 
 import type { Scene } from "@excalidraw/element";
@@ -163,7 +164,6 @@ import { useExcalidrawContainer } from "../components/App";
 import { register } from "./register";
 
 import type { AppClassProperties, AppState, Primitive } from "../types";
-import { Center } from "../components/welcome-screen/WelcomeScreen.Center";
 
 
 const FONT_SIZE_RELATIVE_INCREASE_STEP = 0.1;
@@ -1096,7 +1096,7 @@ export const actionChangePolygon = register({
         (element) => {
           if (isRectangleElement(element) || isImageElement(element)) {
             return newElementWith(element, {
-              cropPolygon: value,
+              cropPolygon: value
             });
           }else{
             console.error("该功能只支持矩形和图片元素使用")
@@ -1107,7 +1107,7 @@ export const actionChangePolygon = register({
       ),
       appState: {
         ...appState,
-        currentItemPolygon: DEFAULT_CROP_POLYGON,
+        currentItemPolygon: DEFAULT_CROP_POLYGON
       },
       captureUpdate: CaptureUpdateAction.IMMEDIATELY,
     }
@@ -1235,7 +1235,6 @@ export const actionChangePolygon = register({
                         borderRadius: '8px',
                       }}
                       onClick={()=>{
-                        console.log('item.key', item.key)
                         updateData(item.key);
                       }}
                       >
