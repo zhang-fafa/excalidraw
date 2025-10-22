@@ -133,7 +133,8 @@ export const applyCropPolygon = (
 
   if (!cropConfig) return false;
   const { width, height, x, y } = element;
-  
+  const actualX = !appState.openDialog ? x + appState.scrollX : 0;
+  const actualY = !appState.openDialog ? y + appState.scrollY : 0;
 
   try {
     context.beginPath();
@@ -151,7 +152,8 @@ export const applyCropPolygon = (
         const centerY = height / 2;
         const radiusX = width / 2;
         const radiusY = height / 2;
-        context.ellipse(x + appState.scrollX + centerX, y + appState.scrollY + centerY, radiusX, radiusY, 0, 0, 2 * Math.PI);
+        
+        context.ellipse(actualX + centerX, actualY + centerY, radiusX, radiusY, 0, 0, 2 * Math.PI);
 
         if (element.strokeWidth > 0 && element.type !== "image") {
           context.save();
@@ -200,7 +202,7 @@ export const applyCropPolygon = (
             
             // 绘制艺术风格椭圆
             context.save();
-            context.translate(x + appState.scrollX , y + appState.scrollY);
+            context.translate(actualX , actualY);
             
             const rc = rough.canvas(context.canvas);
             rc.draw(ellipseShape);
@@ -255,8 +257,8 @@ export const applyCropPolygon = (
           const createPolygonPath = (withTransform = true) => {
             context.beginPath();
             
-            const baseX = withTransform ? x + appState.scrollX : 0;
-            const baseY = withTransform ? y + appState.scrollY : 0;
+            const baseX = withTransform ? actualX : 0;
+            const baseY = withTransform ? actualY : 0;
             
             context.moveTo(baseX + startX, baseY + startY);
             
@@ -276,7 +278,7 @@ export const applyCropPolygon = (
             if (isArtisticStyle) {
               // 艺术风格绘制
               context.save();
-              context.translate(x + appState.scrollX, y + appState.scrollY);
+              context.translate(actualX, actualY);
               
               // 准备RoughJS多边形数据
               const polygonPoints = points.map(([px, py]) => [px, py] as [number, number]);
@@ -338,8 +340,8 @@ export const applyCropPolygon = (
                 drawSlightlyRoughPolygon(
                   context, 
                   points, 
-                  x + appState.scrollX, 
-                  y + appState.scrollY, 
+                  actualX, 
+                  actualY, 
                   element.roughness
                 );
               } else {
