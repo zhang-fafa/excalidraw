@@ -131,7 +131,6 @@ export const applyCropPolygon = (
   }
   const cropConfig  = appState.cropPolygonConfig[element?.cropPolygon] || CROP_POLYGON[element?.cropPolygon];
 
-  console.log('appState' ,appState, appState.cropPolygonConfig)
   if (!cropConfig) return false;
   const { width, height, x, y } = element;
   

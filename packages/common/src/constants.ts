@@ -566,6 +566,11 @@ export const CROP_POLYGON: CropPolygonConfig = {
     label:'倒三角形',
     value: 'polygon(0% 0%, 100% 0%, 50% 100%)',
     type: 'polygon'
+  },
+  "z-t-sjx": {
+    label:'直角三角形',
+    value: 'polygon(0% 0%, 100% 0%, 0% 100%)',
+    type: 'polygon'
   }
 };
 

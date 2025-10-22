@@ -700,8 +700,6 @@ class App extends React.Component<AppProps, AppState> {
       cropPolygonConfig: props.cropPolygonConfig || CROP_POLYGON,
     };
 
-    console.log('111',props.cropPolygonConfig, this.state)
-
     this.id = nanoid();
     this.library = new Library(this);
     this.actionManager = new ActionManager(
@@ -1574,7 +1572,6 @@ class App extends React.Component<AppProps, AppState> {
     const showShapeSwitchPanel =
       editorJotaiStore.get(convertElementTypePopupAtom)?.type === "panel";
 
-    console.log('2222', this.state.cropPolygonConfig)
     return (
       <div
         className={clsx("excalidraw excalidraw-container", {
@@ -2260,10 +2257,11 @@ class App extends React.Component<AppProps, AppState> {
 
       this.setState((prevAppState) => {
         const actionAppState = actionResult.appState || {};
-
         return {
           ...prevAppState,
           ...actionAppState,
+          // 确保 cropPolygonConfig 不会被意外覆盖
+          cropPolygonConfig: prevAppState.cropPolygonConfig,
           // NOTE this will prevent opening context menu using an action
           // or programmatically from the host, so it will need to be
           // rewritten later
@@ -9137,7 +9135,7 @@ class App extends React.Component<AppProps, AppState> {
         activeTool,
         isResizing,
         isRotating,
-        isCropping,
+        isCropping
       } = this.state;
 
       this.setState((prevState) => ({
@@ -9151,6 +9149,7 @@ class App extends React.Component<AppProps, AppState> {
         cursorButton: "up",
         snapLines: updateStable(prevState.snapLines, []),
         originSnapOffset: null,
+        cropPolygonConfig: prevState.cropPolygonConfig
       }));
 
       // just in case, tool changes mid drag, always clean up

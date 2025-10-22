@@ -14,6 +14,7 @@ import type {
   RenderableElementsMap,
   StaticCanvasRenderConfig,
 } from "../../scene/types";
+import { CROP_POLYGON } from "@excalidraw/common";
 import type { AppState, StaticCanvasAppState } from "../../types";
 import type { RoughCanvas } from "roughjs/bin/canvas";
 
@@ -98,7 +99,8 @@ const getRelevantAppStateProps = (appState: AppState): StaticCanvasAppState => {
     editingGroupId: appState.editingGroupId,
     currentHoveredFontFamily: appState.currentHoveredFontFamily,
     croppingElementId: appState.croppingElementId,
-    cropPolygonConfig: appState.cropPolygonConfig,
+    // 确保 cropPolygonConfig 被正确传递，使用 || 运算符确保即使为 undefined 也能正确处理
+    cropPolygonConfig: appState.cropPolygonConfig || CROP_POLYGON,
   };
 
   return relevantAppStateProps;
