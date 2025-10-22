@@ -103,6 +103,7 @@ import {
   isMobile,
   MINIMUM_ARROW_SIZE,
   DOUBLE_TAP_POSITION_THRESHOLD,
+  CROP_POLYGON,
 } from "@excalidraw/common";
 
 import {
@@ -469,6 +470,7 @@ import type {
   GenerateDiagramToCode,
   NullableGridSize,
   Offsets,
+  CropPolygonConfig,
 } from "../types";
 import type { RoughCanvas } from "roughjs/bin/canvas";
 import type { Action, ActionResult } from "../actions/types";
@@ -695,7 +697,10 @@ class App extends React.Component<AppProps, AppState> {
       name,
       width: window.innerWidth,
       height: window.innerHeight,
+      cropPolygonConfig: props.cropPolygonConfig || CROP_POLYGON,
     };
+
+    console.log('111',props.cropPolygonConfig, this.state)
 
     this.id = nanoid();
     this.library = new Library(this);
@@ -772,6 +777,8 @@ class App extends React.Component<AppProps, AppState> {
     this.actionManager.registerAction(createRedoAction(this.history));
 
     this.imageUploadUrl = imageUploadUrl
+
+
   }
 
   updateEditorAtom = <Value, Args extends unknown[], Result>(
@@ -1567,6 +1574,7 @@ class App extends React.Component<AppProps, AppState> {
     const showShapeSwitchPanel =
       editorJotaiStore.get(convertElementTypePopupAtom)?.type === "panel";
 
+    console.log('2222', this.state.cropPolygonConfig)
     return (
       <div
         className={clsx("excalidraw excalidraw-container", {

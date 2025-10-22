@@ -163,7 +163,7 @@ import { useExcalidrawContainer } from "../components/App";
 
 import { register } from "./register";
 
-import type { AppClassProperties, AppState, Primitive } from "../types";
+import type { AppClassProperties, AppState, CropPolygonConfig, Primitive } from "../types";
 
 
 const FONT_SIZE_RELATIVE_INCREASE_STEP = 0.1;
@@ -1099,7 +1099,7 @@ export const actionChangePolygon = register({
               cropPolygon: value
             });
           }else{
-            console.error("该功能只支持矩形和图片元素使用")
+            console.error("该功能只支持矩形和图片元素使用", element.type)
           }
           return element;
         },
@@ -1114,10 +1114,12 @@ export const actionChangePolygon = register({
   },
   PanelComponent: ({ elements, appState, updateData, app, data }) => {
     const { container } = useExcalidrawContainer();
+    const CROP_POLYGON_LIST: CropPolygonConfig = app.props.cropPolygonConfig || CROP_POLYGON;
+
     const currentValue = getFormValue(
       elements,
       app,
-      (element): keyof typeof CROP_POLYGON => {
+      (element): keyof typeof CROP_POLYGON_LIST => {
         if (isRectangleElement(element)) {
           return element.cropPolygon || DEFAULT_CROP_POLYGON;
         }
@@ -1136,11 +1138,11 @@ export const actionChangePolygon = register({
       (hasSelection) => hasSelection ? DEFAULT_CROP_POLYGON : appState.currentItemCropPolygon,
     );
     const [openSelectPolygon, setOpenSelectPolygon] = useState<boolean>(false);
-    const displayValue: keyof typeof CROP_POLYGON = currentValue || DEFAULT_CROP_POLYGON;
+    const displayValue: keyof typeof CROP_POLYGON_LIST = currentValue || DEFAULT_CROP_POLYGON;
     // 使用之前定义的POLYGON对象生成选项
     const generatePolygonOptions = () => {
-      return Object.entries(CROP_POLYGON).map(([key, config]) => ({
-        key: key as keyof typeof CROP_POLYGON,
+      return Object.entries(CROP_POLYGON_LIST).map(([key, config]) => ({
+        key: key as keyof typeof CROP_POLYGON_LIST,
         label: config.label,
         value: config.value
       }));

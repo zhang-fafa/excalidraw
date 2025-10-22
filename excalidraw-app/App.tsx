@@ -911,6 +911,95 @@ const ExcalidrawWrapper = () => {
             excalidrawAPI?.scrollToContent(element.link, { animate: true });
           }
         }}
+        cropPolygonConfig={
+          {
+            "z-sjx": {
+              type: "polygon",
+              label:'正三角形',
+              value: 'polygon(50% 0%, 0% 100%, 100% 100%)'
+            },
+            'd-sjx': {
+              type: "polygon",
+              label:'倒三角形',
+              value: 'polygon(0% 0%, 100% 0%, 50% 100%)'
+            },
+            "l-sjx": {
+              type: "polygon",
+              label:'左三角形',
+              value: 'polygon(100% 0, 100% 100%, 0% 50%)'
+            },
+            "r-sjx": {
+              type: "polygon",
+              label:'右三角形',
+              value: 'polygon(0% 0%, 100% 50%, 0% 100%)'
+            },
+            "z-t-sjx": {
+              type: "polygon",
+              label:'直角三角形(左上)',
+              value: 'polygon(0% 0%, 100% 0%, 0% 100%, 0% 0%)'
+            },
+            "z-l-b-sjx": {
+              type: "polygon",
+              label:'直角三角形(左下)',
+              value: 'polygon(0% 0%, 100% 100%, 0% 100%, 0% 0%)'
+            },
+            "z-r-t-sjx": {
+              type: "polygon",
+              label:'直角三角形(右上)',
+              value: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 0%)'
+            },
+            "z-r-b-sjx": {
+              type: "polygon",
+              label:'直角三角形(右下)',
+              value: 'polygon(0% 100%, 100% 0%, 100% 100%, 0% 100%)'
+            },
+            "tix": {
+              type: "polygon",
+              label:'梯形',
+              value: 'polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)'
+            },
+            "pxsbx": {
+              type: "polygon",
+              label:'平行四边形',
+              value: 'polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%)'
+            },
+            "ling-xing": {
+              type: "polygon",
+              label:'棱形',
+              value: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)'
+            },
+            "w-bianxing": {
+              type: "polygon",
+              label:'五边形',
+              value: 'polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%)'
+            },
+            "l-bianxing": {
+              type: "polygon",
+              label:'六边形',
+              value: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)'
+            },
+            "q-bianxing": {
+              type: "polygon",
+              label:'七边形',
+              value: 'polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%)'
+            },
+            "b-bianxing": {
+              type: "polygon",
+              label:'八边形',
+              value: 'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)'
+            },
+            "j-bianxing": {
+              type: "polygon",
+              label:'九边形',
+              value: 'polygon(50% 0%, 83% 12%, 100% 43%, 94% 78%, 68% 100%, 32% 100%, 6% 78%, 0% 43%, 17% 12%)'
+            },
+            "s-bianxing": {
+              type: "polygon",
+              label:'十边形',
+              value: 'polygon(50% 0%, 80% 10%, 100% 35%, 100% 70%, 80% 90%, 50% 100%, 20% 90%, 0% 70%, 0% 35%, 20% 10%)'
+            }
+          }
+        }
       >
         <AppMainMenu
           onCollabDialogOpen={onCollabDialogOpen}

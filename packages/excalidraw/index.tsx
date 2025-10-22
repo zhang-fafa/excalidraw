@@ -55,6 +55,7 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
     aiEnabled,
     showDeprecatedFonts,
     renderScrollbars,
+    cropPolygonConfig,
   } = props;
 
   const canvasActions = props.UIOptions?.canvasActions;
@@ -147,6 +148,7 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
           aiEnabled={aiEnabled !== false}
           showDeprecatedFonts={showDeprecatedFonts}
           renderScrollbars={renderScrollbars}
+          cropPolygonConfig={cropPolygonConfig}
         >
           {children}
         </App>

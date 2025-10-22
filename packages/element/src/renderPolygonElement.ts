@@ -129,8 +129,9 @@ export const applyCropPolygon = (
       (element.type !== 'image' && element.type !== 'rectangle')) {
     return false;
   }
-  const cropConfig  = CROP_POLYGON[element?.cropPolygon];
+  const cropConfig  = appState.cropPolygonConfig[element?.cropPolygon] || CROP_POLYGON[element?.cropPolygon];
 
+  console.log('appState' ,appState, appState.cropPolygonConfig)
   if (!cropConfig) return false;
   const { width, height, x, y } = element;
   

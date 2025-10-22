@@ -207,6 +207,7 @@ export type StaticCanvasAppState = Readonly<
     hoveredElementIds: AppState["hoveredElementIds"];
     // Cropping
     croppingElementId: AppState["croppingElementId"];
+    cropPolygonConfig: CropPolygonConfig;
   }
 >;
 
@@ -446,6 +447,8 @@ export interface AppState {
   // as elements are unlocked, we remove the groupId from the elements
   // and also remove groupId from this map
   lockedMultiSelections: { [groupId: string]: true };
+
+  cropPolygonConfig: CropPolygonConfig,
 }
 
 export type SearchMatch = {
@@ -530,6 +533,14 @@ export type OnUserFollowedPayload = {
   userToFollow: UserToFollow;
   action: "FOLLOW" | "UNFOLLOW";
 };
+
+export interface CropPolygonConfig {
+  [key: string]: {
+    label: string;
+    value: string;
+    type: 'rectangle' | 'ellipse' | 'polygon';
+  };
+}
 
 export interface ExcalidrawProps {
   onChange?: (
@@ -622,6 +633,7 @@ export interface ExcalidrawProps {
   aiEnabled?: boolean;
   showDeprecatedFonts?: boolean;
   renderScrollbars?: boolean;
+  cropPolygonConfig?: CropPolygonConfig;
 }
 
 export type SceneData = {

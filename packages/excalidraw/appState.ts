@@ -13,9 +13,10 @@ import {
   isTestEnv,
   DEFAULT_LETTER_SPACING,
   DEFAULT_CROP_POLYGON,
+  CROP_POLYGON,
 } from "@excalidraw/common";
 
-import type { AppState, NormalizedZoomValue } from "./types";
+import type { AppState, NormalizedZoomValue, CropPolygonConfig } from "./types";
 
 const defaultExportScale = EXPORT_SCALES.includes(devicePixelRatio)
   ? devicePixelRatio
@@ -128,6 +129,7 @@ export const getDefaultAppState = (): Omit<
     searchMatches: null,
     lockedMultiSelections: {},
     activeLockedId: null,
+    cropPolygonConfig: CROP_POLYGON
   };
 };
 
@@ -255,6 +257,8 @@ const APP_STATE_STORAGE_CONF = (<
   lockedMultiSelections: { browser: true, export: true, server: true },
   activeLockedId: { browser: false, export: false, server: false },
   currentItemUrl: { browser: false, export: false, server: false },
+
+  cropPolygonConfig: { browser: false, export: false, server: false },
 });
 
 const _clearAppStateForStorage = <

@@ -2,7 +2,7 @@ import type {
   ExcalidrawElement,
   FontFamilyValues,
 } from "@excalidraw/element/types";
-import type { AppProps, AppState } from "@excalidraw/excalidraw/types";
+import type { AppProps, AppState, CropPolygonConfig } from "@excalidraw/excalidraw/types";
 
 import { COLOR_PALETTE } from "./colors";
 
@@ -541,7 +541,7 @@ export const LINE_POLYGON_POINT_MERGE_DISTANCE = 20;
 export const DOUBLE_TAP_POSITION_THRESHOLD = 35;
 
 
-export const CROP_POLYGON = {
+export const CROP_POLYGON: CropPolygonConfig = {
   "juxing": {
     label:'矩形',
     value: '',
